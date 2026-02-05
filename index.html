@@ -708,12 +708,13 @@
         #poster-showcase {
             background: #000;
             overflow: hidden;
+            padding: 40px 0;
         }
 
         #poster-carousel-container {
             display: flex;
-            gap: 60px;
-            padding: 0 60px;
+            gap: 40px;
+            padding: 0 40px;
             will-change: transform;
             align-items: center;
             height: 100%;
@@ -722,8 +723,8 @@
 
         .showcase-poster-item {
             flex-shrink: 0;
-            max-width: min(85vw, 1100px);
-            max-height: min(85vh, 850px);
+            width: min(90vw, 1400px);
+            height: min(80vh, 800px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -732,8 +733,15 @@
         .showcase-poster-item img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* Changed from contain to cover for better fit */
             filter: brightness(1) contrast(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .showcase-poster-item {
+                width: 95vw;
+                height: 70vh;
+            }
         }
 
         /* Slide Container for ending */
@@ -1343,7 +1351,7 @@
                 masterTl.to("#vignette", { opacity: 0, duration: 0.5 }, "-=0.5");
             });
 
-            // Poster Showcase - Smooth horizontal scrolling carousel
+            // Poster Showcase - Auto-scrolling carousel like reference image
             const posterShowcase = document.getElementById('poster-showcase');
             const posterCarousel = document.getElementById('poster-carousel-container');
             const posterItems = document.querySelectorAll('.showcase-poster-item');
@@ -1351,18 +1359,18 @@
             // Show poster showcase
             masterTl.to(posterShowcase, { autoAlpha: 1, duration: 1 });
             
-            // Calculate total width for smooth continuous scroll
-            const itemWidth = window.innerWidth * 0.85 + 60; // max-width + gap
+            // Calculate total width for smooth continuous auto-scroll
+            const itemWidth = Math.min(window.innerWidth * 0.9, 1400) + 40; // width + gap
             const totalScrollDistance = itemWidth * projects.length;
-            const scrollDuration = projects.length * 12; // 12 seconds per poster
+            const scrollDuration = projects.length * 8; // 8 seconds per poster (faster auto-scroll)
             
-            // Smooth continuous scroll from left to right
-            masterTl.fromTo(posterCarousel, 
-                { x: 0 },
+            // Smooth continuous auto-scroll from right to left (like reference image)
+            masterTl.to(posterCarousel, 
                 { 
                     x: -totalScrollDistance,
                     duration: scrollDuration,
-                    ease: "none" // Linear for smooth continuous motion
+                    ease: "none", // Linear for smooth continuous auto-scroll
+                    force3D: true // GPU acceleration
                 }
             );
             
