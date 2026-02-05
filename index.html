@@ -23,21 +23,47 @@
             --font-thai: 'Kanit', sans-serif;
             --font-code: 'Rajdhani', monospace;
             
-            --img-w: 26vw; 
-            --img-h: 32.5vw;
-            --center-w: 12vw;
-            --center-h: 15vw;
-            --creator-w: 35vw;
-            --creator-h: 43.75vw;
+            /* Responsive poster sizes */
+            --img-w: min(26vw, 400px); 
+            --img-h: min(32.5vw, 500px);
+            --center-w: min(12vw, 180px);
+            --center-h: min(15vw, 225px);
+            --creator-w: min(35vw, 520px);
+            --creator-h: min(43.75vw, 650px);
 
             --glow-cyan: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(0, 255, 255, 0.3);
         }
 
+        @media (max-width: 1200px) {
+            :root {
+                --img-w: min(32vw, 350px); 
+                --img-h: min(40vw, 437px);
+                --center-w: min(16vw, 200px); 
+                --center-h: min(20vw, 250px);
+                --creator-w: min(45vw, 500px); 
+                --creator-h: min(56.25vw, 625px);
+            }
+        }
+
         @media (max-width: 768px) {
             :root {
-                --img-w: 38vw; --img-h: 47.5vw;
-                --center-w: 20vw; --center-h: 25vw;
-                --creator-w: 70vw; --creator-h: 87.5vw;
+                --img-w: min(38vw, 300px); 
+                --img-h: min(47.5vw, 375px);
+                --center-w: min(20vw, 180px); 
+                --center-h: min(25vw, 225px);
+                --creator-w: min(70vw, 400px); 
+                --creator-h: min(87.5vw, 500px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --img-w: min(42vw, 200px); 
+                --img-h: min(52.5vw, 250px);
+                --center-w: min(24vw, 150px); 
+                --center-h: min(30vw, 187px);
+                --creator-w: min(85vw, 340px); 
+                --creator-h: min(106.25vw, 425px);
             }
         }
 
@@ -80,14 +106,15 @@
         #start-screen {
             position: fixed; inset: 0; background: var(--bg-void); z-index: 15000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px;
         }
         #start-btn {
             background: rgba(0, 255, 255, 0.08); 
             border: 3px solid var(--accent-cyan); 
             color: var(--accent-cyan);
-            padding: 22px 70px; 
-            font-size: 1.3rem; 
-            letter-spacing: 14px;
+            padding: clamp(16px, 3vw, 22px) clamp(40px, 8vw, 70px); 
+            font-size: clamp(1rem, 2.5vw, 1.3rem); 
+            letter-spacing: clamp(6px, 1.5vw, 14px);
             cursor: pointer; 
             text-transform: uppercase;
             font-family: var(--font-display); 
@@ -120,46 +147,24 @@
         .draw-grid { 
             display: flex; 
             align-items: center; 
-            gap: 5vw; 
-            z-index: 8100; 
+            gap: clamp(20px, 5vw, 80px); 
+            z-index: 8100;
+            padding: 20px;
         }
         
         .side-box {
             width: var(--img-w); 
             height: var(--img-h); 
-            border: 4px solid var(--accent-cyan);
-            background: linear-gradient(135deg, rgba(0, 20, 40, 0.8), rgba(0, 10, 20, 0.9)); 
-            box-shadow: var(--glow-cyan), inset 0 0 50px rgba(0, 255, 255, 0.1);
             overflow: hidden; 
             position: relative;
-            padding: 8px;
+            background: transparent;
         }
-        .side-box::before {
-            content: ''; 
-            position: absolute; 
-            inset: 0;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .side-box::after {
-            content: ''; 
-            position: absolute; 
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 48%, rgba(0,255,255,0.3) 50%, transparent 52%);
-            background-size: 100% 30px;
-            animation: scanPoster 3s linear infinite;
-            pointer-events: none;
-            z-index: 2;
-        }
-        @keyframes scanPoster { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
 
         .side-box-inner {
             width: 100%; 
             height: 100%; 
             overflow: hidden; 
             position: relative;
-            border: 2px solid rgba(0, 255, 255, 0.4);
         }
         .poster-carousel {
             display: flex;
@@ -172,7 +177,7 @@
             height: 100%;
             object-fit: contain;
             flex-shrink: 0;
-            filter: brightness(0.9) contrast(1.1);
+            filter: brightness(1) contrast(1.05);
         }
         
         .side-label {
@@ -182,12 +187,12 @@
             width: 100%; 
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
             color: #000; 
-            font-size: 11px; 
+            font-size: clamp(9px, 1.5vw, 11px); 
             text-align: center; 
             font-weight: 900; 
-            padding: 6px 0;
+            padding: clamp(4px, 1vw, 6px) 0;
             font-family: var(--font-code); 
-            letter-spacing: 3px;
+            letter-spacing: clamp(1px, 0.5vw, 3px);
             z-index: 10;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
         }
@@ -202,7 +207,6 @@
             align-items: center;
         }
         
-        /* หลายวงกลมซ้อนกัน */
         .center-scouter::before {
             content: ''; 
             position: absolute; 
@@ -241,7 +245,6 @@
             50% { transform: scale(1.05) rotate(-180deg); opacity: 0.9; }
         }
 
-        /* เส้นแฉก 4 ด้าน */
         .scouter-line {
             position: absolute;
             background: linear-gradient(90deg, transparent, var(--accent-orange), transparent);
@@ -260,11 +263,10 @@
             50% { opacity: 1; box-shadow: 0 0 30px var(--accent-orange), 0 0 50px var(--accent-orange); }
         }
 
-        /* มุมเหลี่ยม */
         .scouter-bracket {
             position: absolute; 
-            width: 30px; 
-            height: 30px; 
+            width: clamp(20px, 4vw, 30px); 
+            height: clamp(20px, 4vw, 30px); 
             border: 3px solid var(--accent-green); 
             z-index: 11;
             animation: bracketPulse 1s ease-in-out infinite;
@@ -279,7 +281,6 @@
             50% { opacity: 1; transform: scale(1.1); }
         }
 
-        /* กล่องตัวเลขที่สวยขึ้น */
         .center-counter {
             width: 100%; 
             height: 100%;
@@ -295,7 +296,6 @@
                 0 0 60px rgba(0, 255, 255, 0.5);
         }
 
-        /* เอฟเฟกต์แสงเคลื่อนที่ */
         .center-counter::before {
             content: '';
             position: absolute;
@@ -329,7 +329,7 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            font-size: clamp(2.8rem, 5.5vw, 4.5rem); 
+            font-size: clamp(2rem, 5.5vw, 4.5rem); 
             font-weight: 900;
             color: var(--accent-cyan); 
             font-family: var(--font-display);
@@ -340,7 +340,6 @@
             position: relative;
         }
 
-        /* เพิ่มเอฟเฟกต์เลขที่วิ่งผ่าน */
         .number-item::after {
             content: attr(data-number);
             position: absolute;
@@ -349,7 +348,7 @@
             filter: blur(2px);
         }
 
-        /* === PROJECT SCENE - CENTERED LAYOUT === */
+        /* === PROJECT SCENE - RESPONSIVE === */
         #camera-rig { position: relative; width: 100%; height: 100%; }
         .scene { 
             position: absolute; 
@@ -373,14 +372,17 @@
             flex-direction: row;
             align-items: center; 
             justify-content: center;
-            gap: 4vw;
-            padding: 0 3vw;
+            gap: clamp(20px, 4vw, 80px);
+            padding: clamp(10px, 2vw, 40px);
         }
 
         @media (max-width: 1024px) { 
             .content-layout { 
                 flex-direction: column;
-                gap: 2vh; 
+                gap: clamp(15px, 2vh, 30px);
+                justify-content: flex-start;
+                padding-top: 60px;
+                overflow-y: auto;
             } 
         }
 
@@ -414,27 +416,34 @@
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
             color: #000; 
             font-family: var(--font-code); 
-            font-size: 12px; 
+            font-size: clamp(10px, 1.5vw, 12px); 
             font-weight: 900;
-            padding: 8px 22px; 
+            padding: clamp(6px, 1vw, 8px) clamp(16px, 2.5vw, 22px); 
             text-transform: uppercase; 
-            letter-spacing: 3px; 
+            letter-spacing: clamp(2px, 0.5vw, 3px); 
             z-index: 10;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
         }
 
-        /* === INFO PANEL - CENTERED === */
+        /* === INFO PANEL - RESPONSIVE === */
         .info-panel {
             flex: 1;
             max-width: 1000px;
-            padding: 20px 40px;
+            padding: clamp(15px, 3vw, 40px);
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        @media (max-width: 1024px) {
+            .info-panel {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
         .title-punch { 
-            font-size: clamp(2.8rem, 5vw, 4.5rem); 
+            font-size: clamp(1.8rem, 5vw, 4.5rem); 
             font-weight: 900; 
             text-transform: uppercase; 
             color: #fff; 
@@ -446,8 +455,8 @@
                 0 0 50px rgba(0, 255, 255, 1),
                 0 0 80px rgba(0, 255, 255, 0.6),
                 0 0 100px rgba(255, 0, 255, 0.4);
-            margin-bottom: 20px;
-            letter-spacing: 6px;
+            margin-bottom: clamp(15px, 2vw, 20px);
+            letter-spacing: clamp(2px, 0.8vw, 6px);
             text-align: center;
             animation: titleGlow 3s ease-in-out infinite;
         }
@@ -473,10 +482,10 @@
         .subtitle-thai {
             font-family: var(--font-thai); 
             font-weight: 500; 
-            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            font-size: clamp(0.9rem, 1.6vw, 1.5rem);
             color: var(--accent-green); 
-            letter-spacing: 1.5px;
-            padding: 12px 25px; 
+            letter-spacing: clamp(0.5px, 0.2vw, 1.5px);
+            padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 25px); 
             border-left: 5px solid var(--accent-green);
             border-right: 5px solid var(--accent-green);
             display: inline-block; 
@@ -484,7 +493,7 @@
                 0 0 25px rgba(0, 255, 0, 0.8),
                 0 0 40px rgba(0, 255, 0, 0.5);
             background: linear-gradient(90deg, rgba(0, 255, 0, 0.15), rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.15));
-            margin-bottom: 30px;
+            margin-bottom: clamp(20px, 3vw, 30px);
             align-self: center;
             position: relative;
         }
@@ -499,17 +508,12 @@
             animation: arrowPulse 2s ease-in-out infinite;
         }
 
-        .subtitle-thai::before {
-            left: 8px;
-        }
-
-        .subtitle-thai::after {
-            right: 8px;
-        }
+        .subtitle-thai::before { left: 8px; }
+        .subtitle-thai::after { right: 8px; }
 
         .info-section {
-            margin-bottom: 30px;
-            padding-bottom: 25px;
+            margin-bottom: clamp(20px, 3vw, 30px);
+            padding-bottom: clamp(18px, 2.5vw, 25px);
             border-bottom: 2px solid rgba(0, 255, 255, 0.2);
             opacity: 0;
             transform: translateX(-30px);
@@ -522,14 +526,14 @@
 
         .section-title {
             font-family: var(--font-display);
-            font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+            font-size: clamp(1rem, 1.6vw, 1.6rem);
             color: var(--accent-cyan);
-            margin-bottom: 15px;
+            margin-bottom: clamp(12px, 1.5vw, 15px);
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: clamp(2px, 0.5vw, 4px);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: clamp(8px, 1.2vw, 12px);
             font-weight: 700;
             text-shadow: 
                 0 0 25px rgba(0, 255, 255, 0.8),
@@ -567,11 +571,11 @@
 
         .info-list li {
             font-family: var(--font-thai);
-            font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+            font-size: clamp(0.8rem, 1.15vw, 1.1rem);
             color: var(--text-bright);
             line-height: 1.8;
-            margin-bottom: 10px;
-            padding-left: 30px;
+            margin-bottom: clamp(8px, 1vw, 10px);
+            padding-left: clamp(25px, 3vw, 30px);
             position: relative;
             font-weight: 300;
         }
@@ -589,17 +593,17 @@
 
         .creators-row {
             display: flex;
-            gap: 15px;
+            gap: clamp(10px, 1.5vw, 15px);
             flex-wrap: wrap;
         }
 
         .creator-tag {
             background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.08));
             border: 2px solid var(--accent-cyan);
-            padding: 8px 18px;
+            padding: clamp(6px, 1vw, 8px) clamp(14px, 2vw, 18px);
             border-radius: 25px;
             font-family: var(--font-thai);
-            font-size: clamp(0.85rem, 1vw, 1rem);
+            font-size: clamp(0.75rem, 1vw, 1rem);
             color: var(--accent-cyan);
             text-shadow: 
                 0 0 20px rgba(0, 255, 255, 0.8),
@@ -632,20 +636,20 @@
             position: fixed; 
             inset: 0; 
             z-index: 9000; 
-            padding: 25px; 
+            padding: clamp(15px, 2.5vw, 25px); 
             pointer-events: none; 
         }
         .hud-line { 
             position: absolute; 
-            width: 60px; 
-            height: 60px; 
+            width: clamp(40px, 6vw, 60px); 
+            height: clamp(40px, 6vw, 60px); 
             border: 2px solid var(--accent-cyan); 
             opacity: 0.4; 
         }
-        .tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
-        .tr { top: 25px; right: 25px; border-left: none; border-bottom: none; }
-        .bl { bottom: 25px; left: 25px; border-right: none; border-top: none; }
-        .br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
+        .tl { top: clamp(15px, 2.5vw, 25px); left: clamp(15px, 2.5vw, 25px); border-right: none; border-bottom: none; }
+        .tr { top: clamp(15px, 2.5vw, 25px); right: clamp(15px, 2.5vw, 25px); border-left: none; border-bottom: none; }
+        .bl { bottom: clamp(15px, 2.5vw, 25px); left: clamp(15px, 2.5vw, 25px); border-right: none; border-top: none; }
+        .br { bottom: clamp(15px, 2.5vw, 25px); right: clamp(15px, 2.5vw, 25px); border-left: none; border-top: none; }
 
         .impact-flash { 
             position: fixed; 
@@ -691,7 +695,49 @@
             transition: opacity 0.3s;
         }
 
+        /* Poster Showcase Styles */
+        #poster-showcase {
+            background: #000;
+        }
+
+        #showcase-poster {
+            max-width: min(90vw, 1200px);
+            max-height: min(90vh, 900px);
+            object-fit: contain;
+            filter: brightness(1) contrast(1.1);
+        }
+
+        /* Slide Container for ending */
+        .slide-container {
+            display: flex;
+            gap: 40px;
+            padding: 0 40px;
+            will-change: transform;
+        }
+
+        .slide-item {
+            flex-shrink: 0;
+            width: min(80vw, 1000px);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
         @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.3; } }
+
+        @media (max-width: 768px) {
+            .slide-item {
+                width: 90vw;
+            }
+            
+            .slide-container {
+                gap: 20px;
+                padding: 0 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -699,9 +745,9 @@
     <audio id="bgm-audio" loop crossOrigin="anonymous"></audio>
 
     <div id="start-screen">
-        <div style="font-family: var(--font-code); font-size: 12px; color: var(--accent-cyan); letter-spacing: 12px; margin-bottom: 30px; animation: blink 1.5s infinite;">SYSTEM_CORE_INIT_2026</div>
+        <div style="font-family: var(--font-code); font-size: clamp(10px, 1.5vw, 12px); color: var(--accent-cyan); letter-spacing: clamp(6px, 1.5vw, 12px); margin-bottom: 30px; animation: blink 1.5s infinite;">SYSTEM_CORE_INIT_2026</div>
         <button id="start-btn" disabled>INITIALIZE SYSTEM</button>
-        <p style="margin-top: 30px; font-size: 12px; font-family: var(--font-thai); color: var(--accent-green); opacity: 0.7;" id="loading-hint">กำลังเตรียมไฟล์มัลติมีเดียความละเอียดสูง...</p>
+        <p style="margin-top: 30px; font-size: clamp(10px, 1.5vw, 12px); font-family: var(--font-thai); color: var(--accent-green); opacity: 0.7; text-align: center;" id="loading-hint">กำลังเตรียมไฟล์มัลติมีเดียความละเอียดสูง...</p>
     </div>
 
     <div class="impact-flash" id="flash"></div>
@@ -711,14 +757,14 @@
     <div class="hud-frame">
         <div class="hud-line tl"></div><div class="hud-line tr"></div>
         <div class="hud-line bl"></div><div class="hud-line br"></div>
-        <div style="display:flex; justify-content:space-between; font-family:var(--font-code); color:var(--accent-cyan); font-size:11px; padding: 15px; opacity: 0.7; letter-spacing: 3px;">
+        <div style="display:flex; justify-content:space-between; font-family:var(--font-code); color:var(--accent-cyan); font-size:clamp(9px, 1.2vw, 11px); padding: 15px; opacity: 0.7; letter-spacing: clamp(1px, 0.4vw, 3px); flex-wrap: wrap; gap: 10px;">
             <div>SYNC_STATE: <span style="color: var(--accent-green);">CORE_AUTO</span></div>
             <div id="hud-timer">00:00:00:00</div>
         </div>
     </div>
 
-    <div class="letterbox lb-t" style="position:fixed; top:0; width:100%; height:8vh; background:rgba(0,0,0,0.9); z-index:9500; border-bottom:1px solid rgba(0,255,255,0.2);"></div>
-    <div class="letterbox lb-b" style="position:fixed; bottom:0; width:100%; height:8vh; background:rgba(0,0,0,0.9); z-index:9500; border-top:1px solid rgba(0,255,255,0.2);"></div>
+    <div class="letterbox lb-t" style="position:fixed; top:0; width:100%; height:clamp(40px, 8vh, 80px); background:rgba(0,0,0,0.9); z-index:9500; border-bottom:1px solid rgba(0,255,255,0.2);"></div>
+    <div class="letterbox lb-b" style="position:fixed; bottom:0; width:100%; height:clamp(40px, 8vh, 80px); background:rgba(0,0,0,0.9); z-index:9500; border-top:1px solid rgba(0,255,255,0.2);"></div>
 
     <div id="draw-stage">
         <div class="draw-grid">
@@ -741,13 +787,19 @@
     <div id="camera-rig">
         <div class="scene" id="poster-showcase">
             <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                <img id="showcase-poster" style="max-width: 90%; max-height: 90%; object-fit: contain; filter: brightness(1) contrast(1.1);">
+                <img id="showcase-poster">
             </div>
         </div>
         <div class="scene" id="outro">
-            <div class="content-layout" style="text-align: center;">
-                <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-cyan); font-size: clamp(2.5rem, 6vw, 5rem);">SEQUENCE_COMPLETE</div>
-                <div class="subtitle-thai" style="font-size: clamp(1.2rem, 2vw, 1.8rem);">นวัตกรรมดิจิทัล • วิทยาลัยเทคนิคอำนาจเจริญ • 2026</div>
+            <div class="slide-container" id="slide-container">
+                <div class="slide-item">
+                    <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-cyan); font-size: clamp(2rem, 6vw, 5rem);">SEQUENCE_COMPLETE</div>
+                    <div class="subtitle-thai" style="font-size: clamp(1rem, 2vw, 1.8rem);">นวัตกรรมดิจิทัล • วิทยาลัยเทคนิคอำนาจเจริญ • 2026</div>
+                </div>
+                <div class="slide-item">
+                    <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-pink); font-size: clamp(2rem, 6vw, 5rem);">THANK YOU</div>
+                    <div class="subtitle-thai" style="font-size: clamp(1rem, 2vw, 1.8rem); border-color: var(--accent-pink); color: var(--accent-pink);">ขอบคุณที่รับชม</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1228,7 +1280,7 @@
                 masterTl.to("#vignette", { opacity: 0, duration: 0.5 }, "-=0.5");
             });
 
-            // Poster Showcase - Show all posters for 15 seconds
+            // Poster Showcase - Show all posters for 15 seconds each
             const posterShowcase = document.getElementById('poster-showcase');
             const showcasePoster = document.getElementById('showcase-poster');
             
@@ -1246,7 +1298,7 @@
                     { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
                 );
                 
-                masterTl.to({}, { duration: 13 }); // Hold for 13 more seconds (total 15 with transitions)
+                masterTl.to({}, { duration: 13 }); 
                 
                 if (i < projects.length - 1) {
                     masterTl.to(showcasePoster, { 
@@ -1260,7 +1312,23 @@
             
             masterTl.to(posterShowcase, { autoAlpha: 0, duration: 1 });
 
+            // Ending with slide transition
+            const slideContainer = document.getElementById('slide-container');
             masterTl.to("#outro", { autoAlpha: 1, duration: 1.5 });
+            
+            // Hold first slide for 5 seconds
+            masterTl.to({}, { duration: 5 });
+            
+            // Slide to right to show "Thank You" slide
+            masterTl.to(slideContainer, { 
+                x: '-100vw', 
+                duration: 1.5, 
+                ease: "power2.inOut" 
+            });
+            
+            // Hold thank you slide for 5 seconds
+            masterTl.to({}, { duration: 5 });
+            
             masterTl.eventCallback("onUpdate", () => {
                 const time = masterTl.time();
                 document.getElementById('hud-timer').innerText = `ID_${Math.floor(time/60).toString().padStart(2,'0')}:${Math.floor(time%60).toString().padStart(2,'0')}:${Math.floor((time%1)*100).toString().padStart(2,'0')}:NODE_11`;
@@ -1271,5 +1339,4 @@
         window.onload = init;
     </script>
 </body>
-
 </html>
