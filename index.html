@@ -100,8 +100,12 @@
             animation: scanlines 8s linear infinite;
             pointer-events: none;
             z-index: 2;
+            will-change: transform;
         }
-        @keyframes scanlines { from { transform: translateY(0); } to { transform: translateY(4px); } }
+        @keyframes scanlines { 
+            from { transform: translateY(0) translateZ(0); } 
+            to { transform: translateY(4px) translateZ(0); } 
+        }
 
         #start-screen {
             position: fixed; inset: 0; background: var(--bg-void); z-index: 15000;
@@ -165,6 +169,7 @@
             height: 100%; 
             overflow: hidden; 
             position: relative;
+            border: none;
         }
         .poster-carousel {
             display: flex;
@@ -321,6 +326,7 @@
             will-change: transform;
             position: relative;
             z-index: 1;
+            transform: translateZ(0); /* Force GPU acceleration */
         }
         .number-item {
             width: 100%; 
@@ -392,6 +398,8 @@
             position: relative; 
             overflow: hidden; 
             flex-shrink: 0;
+            border: none;
+            background: transparent;
         }
         .creator-inner { 
             width: 100%; 
@@ -401,6 +409,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: none;
         }
         .creator-inner img { 
             width: 100%; 
@@ -698,11 +707,31 @@
         /* Poster Showcase Styles */
         #poster-showcase {
             background: #000;
+            overflow: hidden;
         }
 
-        #showcase-poster {
-            max-width: min(90vw, 1200px);
-            max-height: min(90vh, 900px);
+        #poster-carousel-container {
+            display: flex;
+            gap: 60px;
+            padding: 0 60px;
+            will-change: transform;
+            align-items: center;
+            height: 100%;
+            transform: translateZ(0); /* Force GPU acceleration */
+        }
+
+        .showcase-poster-item {
+            flex-shrink: 0;
+            max-width: min(85vw, 1100px);
+            max-height: min(85vh, 850px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .showcase-poster-item img {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
             filter: brightness(1) contrast(1.1);
         }
@@ -713,6 +742,7 @@
             gap: 40px;
             padding: 0 40px;
             will-change: transform;
+            transform: translateZ(0); /* Force GPU acceleration */
         }
 
         .slide-item {
@@ -786,8 +816,8 @@
 
     <div id="camera-rig">
         <div class="scene" id="poster-showcase">
-            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                <img id="showcase-poster">
+            <div id="poster-carousel-container">
+                <!-- Posters will be dynamically inserted here -->
             </div>
         </div>
         <div class="scene" id="outro">
@@ -1005,7 +1035,7 @@
         let currentIdx = 0;
 
         function createParticleBurst(x, y, color = 'var(--accent-cyan)') {
-            const particleCount = 10;
+            const particleCount = 6; // Reduced from 10
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -1016,7 +1046,7 @@
                 document.body.appendChild(particle);
                 
                 const angle = (Math.PI * 2 * i) / particleCount;
-                const velocity = 100 + Math.random() * 100;
+                const velocity = 80 + Math.random() * 60; // Reduced velocity
                 const tx = Math.cos(angle) * velocity;
                 const ty = Math.sin(angle) * velocity;
                 
@@ -1025,7 +1055,7 @@
                     y: ty,
                     opacity: 0,
                     scale: 0,
-                    duration: 0.6 + Math.random() * 0.4,
+                    duration: 0.5,
                     ease: "power2.out",
                     onComplete: () => particle.remove()
                 });
@@ -1035,10 +1065,8 @@
         function triggerGlitch() {
             const glitch = document.getElementById('glitch');
             gsap.timeline()
-                .set(glitch, { opacity: 1, backgroundPosition: '0% 0%' })
-                .to(glitch, { backgroundPosition: '100% 0%', duration: 0.1 })
-                .to(glitch, { backgroundPosition: '200% 0%', duration: 0.1 })
-                .to(glitch, { opacity: 0, duration: 0.05 });
+                .set(glitch, { opacity: 0.8 }) // Reduced opacity
+                .to(glitch, { opacity: 0, duration: 0.15 });
         }
 
         function setVignetteColor(color1, color2) {
@@ -1049,33 +1077,64 @@
 
         function prebootAudio() {
             bgmAudio.src = audioFiles.bgm;
+            bgmAudio.preload = 'auto';
             bgmAudio.load();
-            bgmAudio.addEventListener('canplaythrough', () => {
-                document.getElementById('start-btn').disabled = false;
-                document.getElementById('start-btn').innerText = "INITIALIZE SYSTEM";
-                document.getElementById('loading-hint').innerText = "AUDIO_STREAM: STABLE • READY";
-            }, { once: true });
+            
+            let loadedCount = 0;
+            const totalSounds = 4;
+            
+            const checkAllLoaded = () => {
+                loadedCount++;
+                if (loadedCount >= totalSounds) {
+                    document.getElementById('start-btn').disabled = false;
+                    document.getElementById('start-btn').innerText = "INITIALIZE SYSTEM";
+                    document.getElementById('loading-hint').innerText = "AUDIO_STREAM: STABLE • READY";
+                }
+            };
+            
+            bgmAudio.addEventListener('canplaythrough', checkAllLoaded, { once: true });
 
             sfx.spin = new Audio(audioFiles.spin);
+            sfx.spin.preload = 'auto';
+            sfx.spin.load();
+            sfx.spin.addEventListener('canplaythrough', checkAllLoaded, { once: true });
+            
             sfx.impact = new Audio(audioFiles.impact);
+            sfx.impact.preload = 'auto';
+            sfx.impact.load();
+            sfx.impact.addEventListener('canplaythrough', checkAllLoaded, { once: true });
+            
             sfx.whoosh = new Audio(audioFiles.whoosh);
+            sfx.whoosh.preload = 'auto';
+            sfx.whoosh.load();
+            sfx.whoosh.addEventListener('canplaythrough', checkAllLoaded, { once: true });
         }
 
         async function playSfx(name, vol = 0.25) {
             const sound = sfx[name];
-            if (sound) { try { sound.currentTime = 0; sound.volume = vol; await sound.play(); } catch(e) {} }
+            if (sound && sound.readyState >= 2) { 
+                try { 
+                    sound.currentTime = 0; 
+                    sound.volume = vol; 
+                    sound.play().catch(() => {}); 
+                } catch(e) {} 
+            }
         }
 
         async function startSpinSfx(vol = 0.2) {
-            if (sfx.spin) {
+            if (sfx.spin && sfx.spin.readyState >= 2) {
                 sfx.spin.loop = true;
                 sfx.spin.volume = vol;
-                try { await sfx.spin.play(); } catch(e) {}
+                try { sfx.spin.play().catch(() => {}); } catch(e) {}
             }
         }
 
         function stopSpinSfx() {
-            if (sfx.spin) { sfx.spin.pause(); sfx.spin.currentTime = 0; sfx.spin.loop = false; }
+            if (sfx.spin) { 
+                sfx.spin.pause(); 
+                sfx.spin.currentTime = 0; 
+                sfx.spin.loop = false; 
+            }
         }
 
         document.getElementById('start-btn').addEventListener('click', () => {
@@ -1090,8 +1149,17 @@
             const track = document.getElementById('num-track');
             const rig = document.getElementById('camera-rig');
             const outro = document.getElementById('outro');
+            const posterCarousel = document.getElementById('poster-carousel-container');
 
             prebootAudio();
+
+            // Create poster carousel items
+            projects.forEach((p) => {
+                const posterItem = document.createElement('div');
+                posterItem.className = 'showcase-poster-item';
+                posterItem.innerHTML = `<img src="${p.img}" alt="${p.title}">`;
+                posterCarousel.appendChild(posterItem);
+            });
 
             const spinValues = projects.map(p => p.id.padStart(2, '0'));
             for (let r = 0; r < 12; r++) {
@@ -1209,14 +1277,9 @@
                 
                 masterTl.add(() => {
                     playSfx('impact', 0.3);
-                    gsap.fromTo("#flash", { opacity: 0.5 }, { opacity: 0, duration: 0.5 });
+                    gsap.fromTo("#flash", { opacity: 0.4 }, { opacity: 0, duration: 0.4 });
                     triggerGlitch();
                     createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, 'var(--accent-cyan)');
-                    
-                    setTimeout(() => {
-                        createParticleBurst(window.innerWidth * 0.2, window.innerHeight * 0.3, 'var(--accent-pink)');
-                        createParticleBurst(window.innerWidth * 0.8, window.innerHeight * 0.3, 'var(--accent-green)');
-                    }, 100);
                 });
                 
                 masterTl.to(drawStage, { 
@@ -1280,35 +1343,28 @@
                 masterTl.to("#vignette", { opacity: 0, duration: 0.5 }, "-=0.5");
             });
 
-            // Poster Showcase - Show all posters for 15 seconds each
+            // Poster Showcase - Smooth horizontal scrolling carousel
             const posterShowcase = document.getElementById('poster-showcase');
-            const showcasePoster = document.getElementById('showcase-poster');
+            const posterCarousel = document.getElementById('poster-carousel-container');
+            const posterItems = document.querySelectorAll('.showcase-poster-item');
             
-            projects.forEach((p, i) => {
-                masterTl.add(() => {
-                    showcasePoster.src = p.img;
-                });
-                
-                if (i === 0) {
-                    masterTl.to(posterShowcase, { autoAlpha: 1, duration: 1 });
+            // Show poster showcase
+            masterTl.to(posterShowcase, { autoAlpha: 1, duration: 1 });
+            
+            // Calculate total width for smooth continuous scroll
+            const itemWidth = window.innerWidth * 0.85 + 60; // max-width + gap
+            const totalScrollDistance = itemWidth * projects.length;
+            const scrollDuration = projects.length * 12; // 12 seconds per poster
+            
+            // Smooth continuous scroll from left to right
+            masterTl.fromTo(posterCarousel, 
+                { x: 0 },
+                { 
+                    x: -totalScrollDistance,
+                    duration: scrollDuration,
+                    ease: "none" // Linear for smooth continuous motion
                 }
-                
-                masterTl.fromTo(showcasePoster, 
-                    { scale: 0.8, opacity: 0 },
-                    { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
-                );
-                
-                masterTl.to({}, { duration: 13 }); 
-                
-                if (i < projects.length - 1) {
-                    masterTl.to(showcasePoster, { 
-                        scale: 1.1, 
-                        opacity: 0, 
-                        duration: 1, 
-                        ease: "power2.in" 
-                    });
-                }
-            });
+            );
             
             masterTl.to(posterShowcase, { autoAlpha: 0, duration: 1 });
 
