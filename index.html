@@ -23,48 +23,17 @@
             --font-thai: 'Kanit', sans-serif;
             --font-code: 'Rajdhani', monospace;
             
-            /* Responsive poster sizes */
-            --img-w: min(26vw, 400px); 
-            --img-h: min(32.5vw, 500px);
-            --center-w: min(12vw, 180px);
-            --center-h: min(15vw, 225px);
-            --creator-w: min(35vw, 520px);
-            --creator-h: min(43.75vw, 650px);
+            /* 4:5 Aspect Ratio (80x100cm) */
+            --img-w: min(24vw, 360px); 
+            --img-h: calc(var(--img-w) * 1.25);
+            
+            --center-w: min(12vw, 200px);
+            --center-h: min(15vw, 250px);
+            
+            --creator-w: min(32vw, 480px);
+            --creator-h: calc(var(--creator-w) * 1.25);
 
-            --glow-cyan: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(0, 255, 255, 0.3);
-        }
-
-        @media (max-width: 1200px) {
-            :root {
-                --img-w: min(32vw, 350px); 
-                --img-h: min(40vw, 437px);
-                --center-w: min(16vw, 200px); 
-                --center-h: min(20vw, 250px);
-                --creator-w: min(45vw, 500px); 
-                --creator-h: min(56.25vw, 625px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            :root {
-                --img-w: min(38vw, 300px); 
-                --img-h: min(47.5vw, 375px);
-                --center-w: min(20vw, 180px); 
-                --center-h: min(25vw, 225px);
-                --creator-w: min(70vw, 400px); 
-                --creator-h: min(87.5vw, 500px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            :root {
-                --img-w: min(42vw, 200px); 
-                --img-h: min(52.5vw, 250px);
-                --center-w: min(24vw, 150px); 
-                --center-h: min(30vw, 187px);
-                --creator-w: min(85vw, 340px); 
-                --creator-h: min(106.25vw, 425px);
-            }
+            --glow-strong: 0 0 25px rgba(0, 255, 255, 0.5), 0 0 50px rgba(0, 255, 255, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -74,769 +43,252 @@
             color: var(--text-bright);
             font-family: var(--font-thai);
             overflow: hidden;
-            width: 100vw;
-            height: 100vh;
+            width: 100vw; height: 100vh;
         }
 
+        /* Background effects */
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(var(--grid-cyan) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-cyan) 1px, transparent 1px);
-            background-size: 40px 40px;
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 1;
+            content: ''; position: fixed; inset: 0;
+            background-image: linear-gradient(var(--grid-cyan) 1px, transparent 1px), linear-gradient(90deg, var(--grid-cyan) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.5; pointer-events: none; z-index: 1;
         }
 
         body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
+            content: ''; position: fixed; inset: 0;
             background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.02) 50%);
-            background-size: 100% 4px;
-            animation: scanlines 8s linear infinite;
-            pointer-events: none;
-            z-index: 2;
-            will-change: transform;
-        }
-        @keyframes scanlines { 
-            from { transform: translateY(0) translateZ(0); } 
-            to { transform: translateY(4px) translateZ(0); } 
+            background-size: 100% 4px; animation: scanlines 8s linear infinite;
+            pointer-events: none; z-index: 2;
         }
 
+        @keyframes scanlines { from { transform: translateY(0); } to { transform: translateY(4px); } }
+
+        /* Start Screen */
         #start-screen {
             position: fixed; inset: 0; background: var(--bg-void); z-index: 15000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px;
         }
         #start-btn {
-            background: rgba(0, 255, 255, 0.08); 
-            border: 3px solid var(--accent-cyan); 
-            color: var(--accent-cyan);
-            padding: clamp(16px, 3vw, 22px) clamp(40px, 8vw, 70px); 
-            font-size: clamp(1rem, 2.5vw, 1.3rem); 
-            letter-spacing: clamp(6px, 1.5vw, 14px);
-            cursor: pointer; 
-            text-transform: uppercase;
-            font-family: var(--font-display); 
-            font-weight: 900;
-            position: relative; 
-            transition: all 0.4s;
-            backdrop-filter: blur(20px);
-            box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.15), 0 0 40px rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.05); border: 2px solid var(--accent-cyan); color: var(--accent-cyan);
+            padding: 20px 60px; font-size: 1.2rem; letter-spacing: 10px; cursor: pointer;
+            font-family: var(--font-display); font-weight: 900; transition: all 0.4s;
+            box-shadow: var(--glow-strong); text-transform: uppercase;
         }
-        #start-btn::before {
-            content: ''; position: absolute; inset: -3px;
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink), var(--accent-green), var(--accent-cyan));
-            background-size: 400% 400%; z-index: -1; opacity: 0;
-            transition: opacity 0.4s; animation: gradientShift 3s ease infinite;
-        }
-        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        #start-btn:not(:disabled):hover::before { opacity: 0.6; }
-        #start-btn:not(:disabled):hover {
-            background: var(--accent-cyan); color: #000;
-            box-shadow: 0 0 80px var(--accent-cyan);
-            transform: scale(1.05);
-        }
+        #start-btn:not(:disabled):hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 80px var(--accent-cyan); }
         #start-btn:disabled { opacity: 0.3; cursor: wait; }
 
+        /* Photo HUD Styling */
+        .photo-frame {
+            position: relative; overflow: hidden; border: 2px solid rgba(0, 255, 255, 0.5);
+            box-shadow: var(--glow-strong); background: #000;
+        }
+        
+        .scan-bar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(to right, transparent, var(--accent-cyan), transparent);
+            box-shadow: 0 0 15px var(--accent-cyan); z-index: 5;
+            animation: scanMove 3s ease-in-out infinite;
+            pointer-events: none; opacity: 0.7;
+        }
+        @keyframes scanMove { 0% { top: 0%; opacity: 0; } 10%, 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+        /* Slot Machine Stage */
         #draw-stage {
-            position: fixed; inset: 0; z-index: 8000;
-            display: flex; justify-content: center; align-items: center;
+            position: fixed; inset: 0; z-index: 8000; display: flex; justify-content: center; align-items: center;
             background: #000; opacity: 0; visibility: hidden;
         }
-        .draw-grid { 
-            display: flex; 
-            align-items: center; 
-            gap: clamp(20px, 5vw, 80px); 
-            z-index: 8100;
-            padding: 20px;
-        }
+        .draw-grid { display: flex; align-items: center; gap: clamp(30px, 5vw, 60px); perspective: 1000px; }
         
-        .side-box {
-            width: var(--img-w); 
-            height: var(--img-h); 
-            overflow: hidden; 
-            position: relative;
-            background: transparent;
-        }
+        .side-box { width: var(--img-w); height: var(--img-h); }
+        .side-box img { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.1) contrast(1.1); }
 
-        .side-box-inner {
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            position: relative;
-            border: none;
-        }
-        .poster-carousel {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            will-change: transform;
-        }
-        .poster-carousel img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            flex-shrink: 0;
-            filter: brightness(1) contrast(1.05);
-        }
-        
         .side-label {
-            position: absolute; 
-            top: 0; 
-            left: 0;
-            width: 100%; 
+            position: absolute; bottom: 0; left: 0; width: 100%;
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
-            color: #000; 
-            font-size: clamp(9px, 1.5vw, 11px); 
-            text-align: center; 
-            font-weight: 900; 
-            padding: clamp(4px, 1vw, 6px) 0;
-            font-family: var(--font-code); 
-            letter-spacing: clamp(1px, 0.5vw, 3px);
-            z-index: 10;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            color: #000; font-size: 10px; text-align: center; font-weight: 900; padding: 6px 0;
+            font-family: var(--font-code); letter-spacing: 2px; z-index: 10;
         }
 
-        /* === ENHANCED CENTER SPINNER === */
-        .center-scouter {
-            position: relative;
-            width: var(--center-w);
-            height: var(--center-h);
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        
-        .center-scouter::before {
-            content: ''; 
-            position: absolute; 
-            width: 145%; 
-            height: 145%;
-            border: 3px solid rgba(0,255,255,0.6); 
-            border-radius: 50%;
-            z-index: 9; 
-            pointer-events: none;
-            box-shadow: 
-                0 0 40px rgba(0, 255, 255, 0.7),
-                inset 0 0 40px rgba(0, 255, 255, 0.3);
-            animation: pulseOuter 2s ease-in-out infinite;
-        }
+        /* Improved Center Scouter */
+        .center-scouter { position: relative; width: var(--center-w); height: var(--center-h); }
+        .scouter-corner { position: absolute; width: 25px; height: 25px; border: 3px solid var(--accent-green); z-index: 15; }
+        .sc-tl { top: -10px; left: -10px; border-right: none; border-bottom: none; }
+        .sc-tr { top: -10px; right: -10px; border-left: none; border-bottom: none; }
+        .sc-bl { bottom: -10px; left: -10px; border-right: none; border-top: none; }
+        .sc-br { bottom: -10px; right: -10px; border-left: none; border-top: none; }
 
-        .center-scouter::after {
-            content: ''; 
-            position: absolute; 
-            width: 120%; 
-            height: 120%;
-            border: 2px solid rgba(255, 0, 255, 0.5); 
-            border-radius: 50%;
-            z-index: 8; 
-            pointer-events: none;
-            box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
-            animation: pulseMiddle 2.5s ease-in-out infinite reverse;
-        }
-
-        @keyframes pulseOuter {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
-            50% { transform: scale(1.08) rotate(180deg); opacity: 1; }
-        }
-
-        @keyframes pulseMiddle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
-            50% { transform: scale(1.05) rotate(-180deg); opacity: 0.9; }
-        }
-
-        .scouter-line {
-            position: absolute;
-            background: linear-gradient(90deg, transparent, var(--accent-orange), transparent);
-            z-index: 10;
-            pointer-events: none;
-        }
-        .line-h { width: 140%; height: 3px; animation: lineGlowH 1.5s ease-in-out infinite; }
-        .line-v { width: 3px; height: 140%; animation: lineGlowV 1.5s ease-in-out infinite 0.75s; }
-        
-        @keyframes lineGlowH {
-            0%, 100% { opacity: 0.3; box-shadow: 0 0 10px var(--accent-orange); }
-            50% { opacity: 1; box-shadow: 0 0 30px var(--accent-orange), 0 0 50px var(--accent-orange); }
-        }
-        @keyframes lineGlowV {
-            0%, 100% { opacity: 0.3; box-shadow: 0 0 10px var(--accent-orange); }
-            50% { opacity: 1; box-shadow: 0 0 30px var(--accent-orange), 0 0 50px var(--accent-orange); }
-        }
-
-        .scouter-bracket {
-            position: absolute; 
-            width: clamp(20px, 4vw, 30px); 
-            height: clamp(20px, 4vw, 30px); 
-            border: 3px solid var(--accent-green); 
-            z-index: 11;
-            animation: bracketPulse 1s ease-in-out infinite;
-        }
-        .b-tl { top: -20px; left: -20px; border-right: none; border-bottom: none; }
-        .b-tr { top: -20px; right: -20px; border-left: none; border-bottom: none; }
-        .b-bl { bottom: -20px; left: -20px; border-right: none; border-top: none; }
-        .b-br { bottom: -20px; right: -20px; border-left: none; border-top: none; }
-
-        @keyframes bracketPulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
+        /* Lock Target Bracket - Appears when spin stops */
+        #lock-bracket {
+            position: absolute; inset: -5px; border: 2px solid var(--accent-pink);
+            z-index: 14; opacity: 0; pointer-events: none; border-radius: 10px;
+            box-shadow: 0 0 20px var(--accent-pink);
         }
 
         .center-counter {
-            width: 100%; 
-            height: 100%;
-            background: 
-                linear-gradient(135deg, rgba(0, 40, 80, 0.95), rgba(0, 10, 30, 0.98)),
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1), transparent 70%);
-            border: 3px solid rgba(0,255,255,0.7);
-            overflow: hidden; 
-            position: relative;
-            border-radius: 12px;
-            box-shadow: 
-                inset 0 0 50px rgba(0, 255, 255, 0.4),
-                0 0 60px rgba(0, 255, 255, 0.5);
+            width: 100%; height: 100%; background: rgba(0, 15, 30, 0.95);
+            border: 2px solid var(--accent-cyan); overflow: hidden; position: relative; border-radius: 12px;
+            box-shadow: inset 0 0 40px rgba(0, 255, 255, 0.5), 0 0 30px rgba(0, 255, 255, 0.2);
         }
-
+        
+        /* CRT overlay for scouter */
         .center-counter::before {
-            content: '';
-            position: absolute;
-            inset: -100%;
-            background: linear-gradient(
-                45deg,
-                transparent 30%,
-                rgba(0, 255, 255, 0.3) 50%,
-                transparent 70%
-            );
-            animation: shimmer 3s linear infinite;
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.05) 50%);
+            background-size: 100% 4px; z-index: 5; pointer-events: none;
+        }
+        /* Top/Bottom Vignette to hide entering/exiting numbers */
+        .center-counter::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, #000 0%, transparent 15%, transparent 85%, #000 100%);
+            z-index: 6; pointer-events: none;
         }
 
-        @keyframes shimmer {
-            from { transform: translateX(-100%) translateY(-100%); }
-            to { transform: translateX(100%) translateY(100%); }
+        /* Scrolling Hex Data for atmosphere */
+        .hex-data {
+            position: absolute; left: 8px; top: 0; font-family: var(--font-code);
+            font-size: 9px; color: var(--accent-green); opacity: 0.3; z-index: 4;
+            display: flex; flex-direction: column; line-height: 1.2;
         }
 
         .number-track { 
-            display: flex; 
-            flex-direction: column; 
-            width: 100%; 
-            will-change: transform;
-            position: relative;
-            z-index: 1;
-            transform: translateZ(0); /* Force GPU acceleration */
+            display: flex; flex-direction: column; width: 100%; 
+            will-change: transform; transition: filter 0.2s;
         }
         .number-item {
-            width: 100%; 
-            height: var(--center-h); 
-            flex-shrink: 0;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: clamp(2rem, 5.5vw, 4.5rem); 
-            font-weight: 900;
-            color: var(--accent-cyan); 
-            font-family: var(--font-display);
-            text-shadow: 
-                0 0 20px var(--accent-cyan), 
-                0 0 40px rgba(0, 255, 255, 0.8),
-                0 0 60px rgba(0, 255, 255, 0.5);
-            position: relative;
+            width: 100%; height: var(--center-h); flex-shrink: 0; display: flex;
+            align-items: center; justify-content: center; font-size: 4rem; font-weight: 900;
+            color: var(--accent-cyan); font-family: var(--font-display); 
+            text-shadow: 0 0 20px var(--accent-cyan), 0 0 40px rgba(0, 255, 255, 0.5);
+            letter-spacing: -2px;
         }
 
-        .number-item::after {
-            content: attr(data-number);
-            position: absolute;
-            color: rgba(255, 0, 255, 0.3);
-            transform: scale(1.2);
-            filter: blur(2px);
+        /* Project Scenes */
+        .scene {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; background: var(--bg-void);
         }
-
-        /* === PROJECT SCENE - RESPONSIVE === */
-        #camera-rig { position: relative; width: 100%; height: 100%; }
-        .scene { 
-            position: absolute; 
-            inset: 0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            opacity: 0; 
-            visibility: hidden; 
-            overflow: hidden;
-            background: var(--bg-void);
-        }
-
         .content-layout {
-            position: relative; 
-            z-index: 200; 
-            width: 95%; 
-            max-width: 1800px;
-            height: 100%;
-            display: flex; 
-            flex-direction: row;
-            align-items: center; 
-            justify-content: center;
-            gap: clamp(20px, 4vw, 80px);
-            padding: clamp(10px, 2vw, 40px);
+            display: flex; gap: 60px; width: 95%; max-width: 1600px; align-items: center;
         }
+        @media (max-width: 1024px) { .content-layout { flex-direction: column; padding-top: 100px; overflow-y: auto; } }
 
-        @media (max-width: 1024px) { 
-            .content-layout { 
-                flex-direction: column;
-                gap: clamp(15px, 2vh, 30px);
-                justify-content: flex-start;
-                padding-top: 60px;
-                overflow-y: auto;
-            } 
-        }
-
-        .creator-box {
-            width: var(--creator-w); 
-            height: var(--creator-h); 
-            position: relative; 
-            overflow: hidden; 
-            flex-shrink: 0;
-            border: none;
-            background: transparent;
-        }
-        .creator-inner { 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden; 
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-        }
-        .creator-inner img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain;
-            filter: brightness(0.95) contrast(1.05);
-        }
+        .creator-box { width: var(--creator-w); height: var(--creator-h); }
+        .creator-inner { width: 100%; height: 100%; overflow: hidden; }
+        .creator-inner img { width: 100%; height: 100%; object-fit: cover; }
         
         .node-tag {
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
-            color: #000; 
-            font-family: var(--font-code); 
-            font-size: clamp(10px, 1.5vw, 12px); 
-            font-weight: 900;
-            padding: clamp(6px, 1vw, 8px) clamp(16px, 2.5vw, 22px); 
-            text-transform: uppercase; 
-            letter-spacing: clamp(2px, 0.5vw, 3px); 
-            z-index: 10;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            position: absolute; top: -15px; left: 20px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            color: #000; font-family: var(--font-code); font-size: 12px; font-weight: 900; padding: 5px 15px; z-index: 12;
+            box-shadow: 0 0 15px var(--accent-cyan);
         }
 
-        /* === INFO PANEL - RESPONSIVE === */
-        .info-panel {
-            flex: 1;
-            max-width: 1000px;
-            padding: clamp(15px, 3vw, 40px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        /* Info Panel */
+        .info-panel { flex: 1; }
+        .title-punch {
+            font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 900; color: #fff; font-family: var(--font-display);
+            text-shadow: 3px 3px 0 var(--accent-cyan), 5px 5px 0 var(--accent-pink); margin-bottom: 12px;
         }
-
-        @media (max-width: 1024px) {
-            .info-panel {
-                width: 100%;
-                padding: 20px;
-            }
-        }
-
-        .title-punch { 
-            font-size: clamp(1.8rem, 5vw, 4.5rem); 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            color: #fff; 
-            line-height: 1.1;
-            font-family: var(--font-display);
-            text-shadow: 
-                3px 3px 0 var(--accent-cyan), 
-                6px 6px 0 var(--accent-pink),
-                0 0 50px rgba(0, 255, 255, 1),
-                0 0 80px rgba(0, 255, 255, 0.6),
-                0 0 100px rgba(255, 0, 255, 0.4);
-            margin-bottom: clamp(15px, 2vw, 20px);
-            letter-spacing: clamp(2px, 0.8vw, 6px);
-            text-align: center;
-            animation: titleGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes titleGlow {
-            0%, 100% { 
-                text-shadow: 
-                    3px 3px 0 var(--accent-cyan), 
-                    6px 6px 0 var(--accent-pink),
-                    0 0 50px rgba(0, 255, 255, 1),
-                    0 0 80px rgba(0, 255, 255, 0.6);
-            }
-            50% { 
-                text-shadow: 
-                    3px 3px 0 var(--accent-cyan), 
-                    6px 6px 0 var(--accent-pink),
-                    0 0 70px rgba(0, 255, 255, 1),
-                    0 0 100px rgba(0, 255, 255, 0.8),
-                    0 0 120px rgba(255, 0, 255, 0.5);
-            }
-        }
-
         .subtitle-thai {
-            font-family: var(--font-thai); 
-            font-weight: 500; 
-            font-size: clamp(0.9rem, 1.6vw, 1.5rem);
-            color: var(--accent-green); 
-            letter-spacing: clamp(0.5px, 0.2vw, 1.5px);
-            padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 25px); 
-            border-left: 5px solid var(--accent-green);
-            border-right: 5px solid var(--accent-green);
-            display: inline-block; 
-            text-shadow: 
-                0 0 25px rgba(0, 255, 0, 0.8),
-                0 0 40px rgba(0, 255, 0, 0.5);
-            background: linear-gradient(90deg, rgba(0, 255, 0, 0.15), rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.15));
-            margin-bottom: clamp(20px, 3vw, 30px);
-            align-self: center;
-            position: relative;
+            font-family: var(--font-thai); color: var(--accent-green); font-size: 1.3rem;
+            padding: 8px 25px; border-left: 6px solid var(--accent-green); background: rgba(0, 255, 0, 0.08);
+            margin-bottom: 25px; display: inline-block;
         }
-
-        .subtitle-thai::before,
-        .subtitle-thai::after {
-            content: '◆';
-            position: absolute;
-            color: var(--accent-green);
-            font-size: 0.8em;
-            text-shadow: 0 0 20px var(--accent-green);
-            animation: arrowPulse 2s ease-in-out infinite;
-        }
-
-        .subtitle-thai::before { left: 8px; }
-        .subtitle-thai::after { right: 8px; }
-
-        .info-section {
-            margin-bottom: clamp(20px, 3vw, 30px);
-            padding-bottom: clamp(18px, 2.5vw, 25px);
-            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-
-        .info-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
+        .info-section { margin-bottom: 22px; opacity: 0; transform: translateX(-30px); }
         .section-title {
-            font-family: var(--font-display);
-            font-size: clamp(1rem, 1.6vw, 1.6rem);
-            color: var(--accent-cyan);
-            margin-bottom: clamp(12px, 1.5vw, 15px);
-            text-transform: uppercase;
-            letter-spacing: clamp(2px, 0.5vw, 4px);
-            display: flex;
-            align-items: center;
-            gap: clamp(8px, 1.2vw, 12px);
-            font-weight: 700;
-            text-shadow: 
-                0 0 25px rgba(0, 255, 255, 0.8),
-                0 0 40px rgba(0, 255, 255, 0.5);
-            position: relative;
+            color: var(--accent-cyan); font-family: var(--font-display); font-size: 1.3rem;
+            margin-bottom: 8px; display: flex; align-items: center; gap: 15px; font-weight: 700;
         }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(0, 255, 255, 0.2); }
+        .info-list li { color: #ccc; margin-bottom: 6px; list-style: none; padding-left: 25px; position: relative; }
+        .info-list li::before { content: '◆'; position: absolute; left: 0; color: var(--accent-pink); }
+        .creator-tag { background: rgba(0, 255, 255, 0.1); border: 1px solid var(--accent-cyan); padding: 5px 15px; color: var(--accent-cyan); border-radius: 4px; font-size: 1rem; }
 
-        .section-title::before {
-            content: '▸';
-            color: var(--accent-pink);
-            font-size: 1.8em;
-            text-shadow: 
-                0 0 20px var(--accent-pink),
-                0 0 35px var(--accent-pink);
-            animation: arrowPulse 2s ease-in-out infinite;
+        /* Navigation Controls */
+        .nav-controls { position: fixed; bottom: 9vh; right: 40px; z-index: 10000; display: flex; gap: 20px; }
+        .nav-btn {
+            background: rgba(0, 255, 255, 0.05); border: 2px solid var(--accent-cyan); color: var(--accent-cyan);
+            width: 75px; height: 75px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-code); font-weight: 900; font-size: 1.2rem; transition: 0.3s;
+            backdrop-filter: blur(10px);
         }
+        .nav-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 30px var(--accent-cyan); transform: translateY(-3px); }
 
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-cyan), transparent);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
+        /* Final Showcase */
+        #poster-showcase { background: #000; }
+        #poster-carousel-container { display: flex; gap: 70px; padding: 0 150px; height: 100%; align-items: center; }
+        .showcase-poster-item { flex-shrink: 0; height: 82vh; aspect-ratio: 4/5; border: 2px solid var(--accent-cyan); overflow: hidden; background: #05080a; box-shadow: 0 0 50px rgba(0, 255, 255, 0.3); }
+        .showcase-poster-item img { width: 100%; height: 100%; object-fit: contain; background: #000; }
 
-        @keyframes arrowPulse {
-            0%, 100% { transform: translateX(0); opacity: 1; }
-            50% { transform: translateX(5px); opacity: 0.6; }
-        }
-
-        .info-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .info-list li {
-            font-family: var(--font-thai);
-            font-size: clamp(0.8rem, 1.15vw, 1.1rem);
-            color: var(--text-bright);
-            line-height: 1.8;
-            margin-bottom: clamp(8px, 1vw, 10px);
-            padding-left: clamp(25px, 3vw, 30px);
-            position: relative;
-            font-weight: 300;
-        }
-
-        .info-list li::before {
-            content: '◆';
-            position: absolute;
-            left: 0;
-            color: var(--accent-green);
-            font-size: 1em;
-            text-shadow: 
-                0 0 15px var(--accent-green),
-                0 0 25px rgba(0, 255, 0, 0.5);
-        }
-
-        .creators-row {
-            display: flex;
-            gap: clamp(10px, 1.5vw, 15px);
-            flex-wrap: wrap;
-        }
-
-        .creator-tag {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.08));
-            border: 2px solid var(--accent-cyan);
-            padding: clamp(6px, 1vw, 8px) clamp(14px, 2vw, 18px);
-            border-radius: 25px;
-            font-family: var(--font-thai);
-            font-size: clamp(0.75rem, 1vw, 1rem);
-            color: var(--accent-cyan);
-            text-shadow: 
-                0 0 20px rgba(0, 255, 255, 0.8),
-                0 0 30px rgba(0, 255, 255, 0.5);
-            font-weight: 400;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                0 0 15px rgba(0, 255, 255, 0.3),
-                inset 0 0 20px rgba(0, 255, 255, 0.1);
-        }
-
-        .creator-tag::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shine 3s linear infinite;
-        }
-
-        @keyframes shine {
-            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .hud-frame { 
-            position: fixed; 
-            inset: 0; 
-            z-index: 9000; 
-            padding: clamp(15px, 2.5vw, 25px); 
-            pointer-events: none; 
-        }
-        .hud-line { 
-            position: absolute; 
-            width: clamp(40px, 6vw, 60px); 
-            height: clamp(40px, 6vw, 60px); 
-            border: 2px solid var(--accent-cyan); 
-            opacity: 0.4; 
-        }
-        .tl { top: clamp(15px, 2.5vw, 25px); left: clamp(15px, 2.5vw, 25px); border-right: none; border-bottom: none; }
-        .tr { top: clamp(15px, 2.5vw, 25px); right: clamp(15px, 2.5vw, 25px); border-left: none; border-bottom: none; }
-        .bl { bottom: clamp(15px, 2.5vw, 25px); left: clamp(15px, 2.5vw, 25px); border-right: none; border-top: none; }
-        .br { bottom: clamp(15px, 2.5vw, 25px); right: clamp(15px, 2.5vw, 25px); border-left: none; border-top: none; }
-
-        .impact-flash { 
-            position: fixed; 
-            inset: 0; 
-            background: var(--accent-cyan); 
-            z-index: 10001; 
-            opacity: 0; 
-            pointer-events: none; 
-        }
-
-        .glitch-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 10002;
-            opacity: 0;
-            pointer-events: none;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 0, 255, 0.1) 25%, 
-                transparent 50%, 
-                rgba(0, 255, 255, 0.1) 75%, 
-                transparent 100%);
-            background-size: 200% 100%;
-        }
-
-        .particle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: var(--accent-cyan);
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-            box-shadow: 0 0 10px var(--accent-cyan);
-        }
-
-        .dynamic-vignette {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        /* Poster Showcase Styles */
-        #poster-showcase {
-            background: #000;
-            overflow: hidden;
-            padding: 40px 0;
-        }
-
-        #poster-carousel-container {
-            display: flex;
-            gap: 40px;
-            padding: 0 40px;
-            will-change: transform;
-            align-items: center;
-            height: 100%;
-            transform: translateZ(0); /* Force GPU acceleration */
-        }
-
-        .showcase-poster-item {
-            flex-shrink: 0;
-            width: min(90vw, 1400px);
-            height: min(80vh, 800px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .showcase-poster-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Changed from contain to cover for better fit */
-            filter: brightness(1) contrast(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .showcase-poster-item {
-                width: 95vw;
-                height: 70vh;
-            }
-        }
-
-        /* Slide Container for ending */
-        .slide-container {
-            display: flex;
-            gap: 40px;
-            padding: 0 40px;
-            will-change: transform;
-            transform: translateZ(0); /* Force GPU acceleration */
-        }
-
-        .slide-item {
-            flex-shrink: 0;
-            width: min(80vw, 1000px);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-        }
-
-        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.3; } }
-
-        @media (max-width: 768px) {
-            .slide-item {
-                width: 90vw;
-            }
-            
-            .slide-container {
-                gap: 20px;
-                padding: 0 20px;
-            }
-        }
+        /* HUD Utils */
+        .hud-frame { position: fixed; inset: 0; z-index: 9000; pointer-events: none; padding: 30px; }
+        .hud-line { position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent-cyan); opacity: 0.4; }
+        .tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+        .tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+        .bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+        .br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+        .impact-flash { position: fixed; inset: 0; background: #fff; z-index: 11000; opacity: 0; pointer-events: none; }
+        
+        .img-wrapper { width: 100%; height: 100%; position: relative; }
     </style>
 </head>
 <body>
 
-    <audio id="bgm-audio" loop crossOrigin="anonymous"></audio>
+    <audio id="bgm-audio" loop crossorigin="anonymous"></audio>
 
     <div id="start-screen">
-        <div style="font-family: var(--font-code); font-size: clamp(10px, 1.5vw, 12px); color: var(--accent-cyan); letter-spacing: clamp(6px, 1.5vw, 12px); margin-bottom: 30px; animation: blink 1.5s infinite;">SYSTEM_CORE_INIT_2026</div>
-        <button id="start-btn" disabled>INITIALIZE SYSTEM</button>
-        <p style="margin-top: 30px; font-size: clamp(10px, 1.5vw, 12px); font-family: var(--font-thai); color: var(--accent-green); opacity: 0.7; text-align: center;" id="loading-hint">กำลังเตรียมไฟล์มัลติมีเดียความละเอียดสูง...</p>
+        <div style="font-family:var(--font-code); color:var(--accent-cyan); letter-spacing:12px; margin-bottom:30px; font-size: 1.1rem;">CORE_SYSTEM_INIT_2026</div>
+        <button id="start-btn" disabled>STANDBY...</button>
     </div>
 
     <div class="impact-flash" id="flash"></div>
-    <div class="glitch-overlay" id="glitch"></div>
-    <div class="dynamic-vignette" id="vignette"></div>
 
     <div class="hud-frame">
         <div class="hud-line tl"></div><div class="hud-line tr"></div>
         <div class="hud-line bl"></div><div class="hud-line br"></div>
-        <div style="display:flex; justify-content:space-between; font-family:var(--font-code); color:var(--accent-cyan); font-size:clamp(9px, 1.2vw, 11px); padding: 15px; opacity: 0.7; letter-spacing: clamp(1px, 0.4vw, 3px); flex-wrap: wrap; gap: 10px;">
-            <div>SYNC_STATE: <span style="color: var(--accent-green);">CORE_AUTO</span></div>
-            <div id="hud-timer">00:00:00:00</div>
+        <div style="display:flex; justify-content:space-between; font-family:var(--font-code); color:var(--accent-cyan); font-size:14px; opacity:0.7; letter-spacing: 3px; font-weight: 700;">
+            <div id="status-text">SYSTEM: OPTIMIZED</div>
+            <div id="hud-timer">00:00:00</div>
         </div>
     </div>
 
-    <div class="letterbox lb-t" style="position:fixed; top:0; width:100%; height:clamp(40px, 8vh, 80px); background:rgba(0,0,0,0.9); z-index:9500; border-bottom:1px solid rgba(0,255,255,0.2);"></div>
-    <div class="letterbox lb-b" style="position:fixed; bottom:0; width:100%; height:clamp(40px, 8vh, 80px); background:rgba(0,0,0,0.9); z-index:9500; border-top:1px solid rgba(0,255,255,0.2);"></div>
+    <!-- Navigation HUD -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="navPrev()">PREV</button>
+        <button class="nav-btn" onclick="navNext()">NEXT</button>
+    </div>
+
+    <!-- Cinematic Letterbox -->
+    <div style="position:fixed; top:0; width:100%; height:8vh; background:linear-gradient(to bottom, #000, transparent); z-index:9500; pointer-events:none;"></div>
+    <div style="position:fixed; bottom:0; width:100%; height:8vh; background:linear-gradient(to top, #000, transparent); z-index:9500; pointer-events:none;"></div>
 
     <div id="draw-stage">
         <div class="draw-grid">
-            <div class="side-box" id="box-l"></div>
-            
+            <div class="side-box photo-frame" id="box-l"></div>
             <div class="center-scouter">
-                <div class="scouter-line line-h"></div>
-                <div class="scouter-line line-v"></div>
-                <div class="scouter-bracket b-tl"></div>
-                <div class="scouter-bracket b-tr"></div>
-                <div class="scouter-bracket b-bl"></div>
-                <div class="scouter-bracket b-br"></div>
-                <div class="center-counter"><div class="number-track" id="num-track"></div></div>
+                <div class="scouter-corner sc-tl"></div><div class="scouter-corner sc-tr"></div>
+                <div class="scouter-corner sc-bl"></div><div class="scouter-corner sc-br"></div>
+                <div id="lock-bracket"></div>
+                <div class="center-counter">
+                    <div class="hex-data" id="hex-stream"></div>
+                    <div class="number-track" id="num-track"></div>
+                </div>
             </div>
-
-            <div class="side-box" id="box-r"></div>
+            <div class="side-box photo-frame" id="box-r"></div>
         </div>
     </div>
 
     <div id="camera-rig">
         <div class="scene" id="poster-showcase">
-            <div id="poster-carousel-container">
-                <!-- Posters will be dynamically inserted here -->
-            </div>
+            <div id="poster-carousel-container"></div>
         </div>
         <div class="scene" id="outro">
             <div class="slide-container" id="slide-container">
                 <div class="slide-item">
-                    <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-cyan); font-size: clamp(2rem, 6vw, 5rem);">SEQUENCE_COMPLETE</div>
-                    <div class="subtitle-thai" style="font-size: clamp(1rem, 2vw, 1.8rem);">นวัตกรรมดิจิทัล • วิทยาลัยเทคนิคอำนาจเจริญ • 2026</div>
+                    <div class="title-punch" style="font-size: 6rem;">COMPLETE</div>
+                    <div class="subtitle-thai">วิทยาลัยเทคนิคอำนาจเจริญ • INNOVATION 2026</div>
                 </div>
                 <div class="slide-item">
-                    <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-pink); font-size: clamp(2rem, 6vw, 5rem);">THANK YOU</div>
-                    <div class="subtitle-thai" style="font-size: clamp(1rem, 2vw, 1.8rem); border-color: var(--accent-pink); color: var(--accent-pink);">ขอบคุณที่รับชม</div>
+                    <div class="title-punch" style="font-size: 6rem; text-shadow: 3px 3px 0 var(--accent-pink), 5px 5px 0 var(--accent-cyan);">THANK YOU</div>
+                    <div class="subtitle-thai" style="border-color: var(--accent-pink); color: var(--accent-pink);">ขอบคุณสำหรับการรับชมผลงาน</div>
                 </div>
             </div>
         </div>
@@ -844,561 +296,201 @@
 
     <script>
         const audioFiles = {
-            bgm: "https://image2url.com/r2/default/videos/1770188444874-800b8249-5b6e-4bce-b759-cc0a1002957a.mp4", 
-            spin: "https://assets.mixkit.co/active_storage/sfx/2592/2592-preview.mp3",   
-            impact: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3", 
-            whoosh: "https://assets.mixkit.co/active_storage/sfx/2591/2591-preview.mp3"  
+            bgm: "https://image2url.com/r2/default/videos/1770188444874-800b8249-5b6e-4bce-b759-cc0a1002957a.mp4",
+            spin: "https://assets.mixkit.co/active_storage/sfx/2592/2592-preview.mp3",
+            impact: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"
         };
 
         const projects = [
-            { 
-                id: '1', 
-                title: "LAB ACCESS SYSTEM", 
-                sub: "1. การพัฒนาเว็บไซต์เข้าใช้ห้องปฏิบัติการคอมพิวเตอร์", 
-                img: "https://image2url.com/r2/default/files/1770270328767-4f665d1c-74e9-4ae6-b0c2-7f372a21abaf.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770269586586-ba8fd498-994c-4635-86f5-4a1f685eaa1e.png",
-                creators: ["นางสาวดลลชา ตราทอง", "นางสาวดวงพร สิทธิจันทร์"],
-                objectives: [
-                    "เพื่อพัฒนาระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์ในรูปแบบดิจิทัลให้มีประสิทธิภาพ",
-                    "เพื่อศึกษาและประเมินประสิทธิภาพของระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์"
-                ],
-                benefits: [
-                    "ได้พัฒนาระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์ให้มีประสิทธิภาพ",
-                    "ได้พัฒนาระบบการเข้าใช้ห้องปฏิบัติการในรูปแบบดิจิทัลที่ใช้งานง่าย",
-                    "ได้ศึกษาประสิทธิภาพของผู้ใช้งานระบบการเข้าใช้ห้องปฏิบัติการ"
-                ]
-            },
-            { 
-                id: '2', 
-                title: "BENWIRA BOOKING", 
-                sub: "2. การพัฒนาเว็บไซต์จองที่พัก BENWIRA", 
-                img: "https://image2url.com/r2/default/files/1770275641316-44e314b2-6431-49d3-aab6-a67617edaa25.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770275567233-2cdd4015-9532-41cb-b51f-a20b78061054.png",
-                creators: ["นางสาวเบ็ญจมาภรณ์ อุ่นอ่อน", "นางสาววิภาลินี ภักดี"],
-                objectives: [
-                    "เพื่อพัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับที่พักเบ็ญวิภา",
-                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อเว็บไซต์ระบบจองคิวออนไลน์สำหรับที่พักเบ็ญวิภา"
-                ],
-                benefits: [
-                    "ได้เว็บไซต์ระบบจองคิวที่สามารถใช้งานจริงผ่านเครือข่าย",
-                    "พัฒนาทักษะการเขียนโปรแกรมและการจัดการฐานข้อมูล MySQL",
-                    "เรียนรู้การใช้ AI (ChatGPT) เป็นเครื่องมือช่วยพัฒนาโครงการ"
-                ]
-            },
-            { 
-                id: '3', 
-                title: "SMART EDUCATION", 
-                sub: "3. การพัฒนาระบบ Smart Education", 
-                img: "https://image2url.com/r2/default/files/1770270350191-9044493b-483f-495c-9c6a-178b44f0df68.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770276058060-bdbadc1a-7563-43e2-9a79-70963e8b86ce.png",
-                creators: ["นายลิขิต ไหลล้น", "นายสุวิจักขณ์ หงษ์ศาลา"],
-                objectives: [
-                    "เพื่อพัฒนาระบบเว็บไซต์สำหรับบันทึกการเข้าเรียน การส่งงาน และการตรวจงาน",
-                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานระบบเว็บไซต์"
-                ],
-                benefits: [
-                    "ลดเวลาและขั้นตอนในการบันทึกการเข้าเรียนและรวบรวมไฟล์งาน",
-                    "ช่วยให้อาจารย์จัดการข้อมูลได้สะดวก รวดเร็ว และเป็นระบบมากขึ้น"
-                ]
-            },
-            { 
-                id: '4', 
-                title: "COLLEGE PR MEDIA", 
-                sub: "4. การผลิตสื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญ", 
-                img: "https://image2url.com/r2/default/files/1770278426552-d66b5a92-4c38-4729-86bc-76363cf139d8.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770276449008-aec8b66a-0518-4923-ad86-5a8ec6fe5866.png",
-                creators: ["นางสาวชนัญธิดา สิมุฒิ", "นางสาวชไมพร รื่นเริง"],
-                objectives: [
-                    "เพื่อผลิตสื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญ",
-                    "เพื่อศึกษาความพึงพอใจของผู้เข้าชมสื่อมัลติมีเดียประชาสัมพันธ์"
-                ],
-                benefits: [
-                    "ได้สื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญที่มีคุณภาพ",
-                    "ได้ทราบระดับความพึงพอใจของผู้เข้าชมสื่อมัลติมีเดีย"
-                ]
-            },
-            { 
-                id: '5', 
-                title: "ROYAL MOTION ART", 
-                sub: "5. การผลิตสื่อ Motion Art 70 ปีแห่งพระเมตตา", 
-                img: "https://image2url.com/r2/default/files/1770271583761-fc0daa93-045e-458a-a349-601e469c6c55.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770270006179-472e3176-ee83-44f3-9470-9b4d45430659.png",
-                creators: ["นางสาวกัญญาภัค ศรีเสน", "นางสาวกัญญาณัฐ ศรีเสน"],
-                objectives: [
-                    "ผลิตสื่อ Motion Art \"70 ปีแห่งพระเมตตา\" ด้วย Canva ในระดับมืออาชีพ",
-                    "ประเมินประสิทธิภาพของ Canva ในการสร้างงาน Motion Art"
-                ],
-                benefits: [
-                    "ได้ผลิตสื่อ Motion Art \"70 ปีแห่งพระเมตตา\" คุณภาพสูง",
-                    "พัฒนาทักษะการใช้ Canva ขั้นสูงด้าน Animation และการลำดับภาพ",
-                    "กลุ่มเป้าหมายเข้าใจและเข้าถึงสื่อดิจิทัลได้ง่ายขึ้น"
-                ]
-            },
-            { 
-                id: '6', 
-                title: "UDOMSUK QUEUE", 
-                sub: "6. การพัฒนาเว็บไซต์ระบบจองคิวร้านอาหาร ร้านอาหารอุดมสุข", 
-                img: "https://image2url.com/r2/default/files/1770271649022-acfec717-4bb7-4f08-8337-7864cb700977.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770276635955-0156573d-15e4-424a-9f46-164f90f350d6.png",
-                creators: ["นางสาวพิมพ์ลภัส เนินผา", "นางสาวอัมพร ขันทหัส"],
-                objectives: [
-                    "เพื่อพัฒนาเว็บไซต์ระบบจองคิวร้านอาหารอุดมสุข",
-                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานระบบจองคิว"
-                ],
-                benefits: [
-                    "ได้ระบบการจองคิวร้านอาหารอุดมสุขที่มีประสิทธิภาพ",
-                    "ผู้จัดทำโครงงานได้รับประสบการณ์และพัฒนาทักษะด้านการพัฒนาเว็บไซต์"
-                ]
-            },
-            { 
-                id: '7', 
-                title: "AI GREEN DIGITAL", 
-                sub: "7. การผลิตสื่อปัญญาประดิษฐ์ (AI) ต่อการส่งเสริม Green Digital", 
-                img: "https://image2url.com/r2/default/files/1770271787974-4eca9685-14c2-4e76-9516-d51acb07036f.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770276886657-45df596d-2803-43c9-a8a1-cbb7639d4d74.png",
-                creators: ["นายภวพล เหมาะเจาะ", "นายนันทวัฒน์ หงษ์ทอง"],
-                objectives: [
-                    "ผลิตสื่อปัญญาประดิษฐ์ (AI) เพื่อส่งเสริมแนวคิด Green Digital",
-                    "ศึกษาความพึงพอใจของผู้ชมต่อสื่อ AI เพื่อการอนุรักษ์สิ่งแวดล้อม"
-                ],
-                benefits: [
-                    "สร้างความตระหนักรู้ด้านผลกระทบสิ่งแวดล้อมจากเทคโนโลยี",
-                    "ได้สื่อวิดีโอ AI ที่ย่อยข้อมูลซับซ้อนให้เข้าใจง่าย",
-                    "ส่งเสริมการปรับพฤติกรรมการใช้ดิจิทัลให้เป็นมิตรกับสิ่งแวดล้อม"
-                ]
-            },
-            { 
-                id: '8', 
-                title: "2D MOTION GRAPHIC", 
-                sub: "8. การผลิตสื่อ Motion Graphic 2D แนะนำวิทยาลัยเทคนิคอำนาจเจริญ", 
-                img: "https://image2url.com/r2/default/files/1770271685605-e6944e59-794a-4024-851d-2a18ca0a2b49.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770277283240-43cdedf4-e529-413e-8d56-60a601637309.png",
-                creators: ["นางสาวสุฑิตา ยิ่งยงสันต์", "นางสาวอภิญญา ชายทวีป"],
-                objectives: [
-                    "ผลิตสื่อ Motion Graphic 2D เพื่อแนะนำวิทยาลัยเทคนิคอำนาจเจริญ",
-                    "ประเมินความพึงพอใจต่อสื่อ Motion Graphic 2D"
-                ],
-                benefits: [
-                    "ส่งเสริมความคิดสร้างสรรค์ผ่านการออกแบบ Motion Graphic 2D",
-                    "พัฒนาทักษะด้านเทคโนโลยีดิจิทัล เช่น การสร้างอนิเมชันและตัดต่อภาพ",
-                    "เผยแพร่ข้อมูลและสร้างภาพลักษณ์ของวิทยาลัย"
-                ]
-            },
-            { 
-                id: '9', 
-                title: "DENTAL CLINIC QUEUE", 
-                sub: "9. การพัฒนาเว็บไซต์ระบบจองคิวออนไลน์สำหรับคลินิกหมอฟันยิ้ม", 
-                img: "https://image2url.com/r2/default/files/1770271692165-9669c1da-888a-4388-b716-daa1d105182c.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770277672724-083212e2-b521-4792-8405-d6f2be853af7.png",
-                creators: ["นางสาวพิมพรรณ จันเขียว", "นางสาวอรทัย ปาตะศรี"],
-                objectives: [
-                    "พัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับคลินิกหมอฟันยิ้ม",
-                    "ศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อเว็บไซต์"
-                ],
-                benefits: [
-                    "ได้เว็บไซต์ระบบจองคิวที่สามารถใช้งานจริงผ่านระบบเครือข่าย",
-                    "พัฒนาทักษะการเขียนโปรแกรมและการจัดการฐานข้อมูล",
-                    "เรียนรู้การใช้ AI เป็นเครื่องมือช่วยพัฒนาโครงการ"
-                ]
-            },
-            { 
-                id: '10', 
-                title: "RPG LEARNING GAME", 
-                sub: "10. การพัฒนาสื่อการเรียนรู้เชิงปฏิสัมพันธ์ในรูปแบบเกม RPG", 
-                img: "https://image2url.com/r2/default/files/1770278221988-d0665551-c23f-43ec-9d06-9413aa45119a.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770278081373-a55557a6-16b7-4f14-8900-09845618e488.png",
-                creators: ["นายอติคุณ บุญพุท", "นางสาวอรสา กิ่งแสง"],
-                objectives: [
-                    "พัฒนาสื่อการเรียนรู้เชิงปฏิสัมพันธ์ในรูปแบบเกม RPG โดยใช้ Google AI Studio",
-                    "ประเมินระดับความพึงพอใจของผู้เรียนต่อสื่อเกม RPG"
-                ],
-                benefits: [
-                    "ได้สื่อการเรียนรู้แบบเกม RPG ที่สามารถใช้จัดการเรียนการสอนได้จริง",
-                    "เป็นแนวทางในการพัฒนาสื่อดิจิทัลสำหรับรายวิชาในระดับอาชีวศึกษา",
-                    "ส่งเสริมแรงจูงใจและการมีส่วนร่วมของผู้เรียน"
-                ]
-            },
-            { 
-                id: '11', 
-                title: "NAIL SALON QUEUE", 
-                sub: "11. การพัฒนาเว็บไซต์ระบบจองคิวร้านทำเล็บ", 
-                img: "https://image2url.com/r2/default/files/1770271707904-b2988bfb-bdc3-4a29-b55d-a4cbc52f2396.png", 
-                creatorImg: "https://image2url.com/r2/default/files/1770278169754-e0691ade-e822-442e-b48d-bc9fdf88331a.png",
-                creators: ["นางสาวสุริษา หอมใจ", "นางสาวสุมิตรา สุภานิช"],
-                objectives: [
-                    "พัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับร้านทำเล็บ",
-                    "ศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อระบบจองคิว"
-                ],
-                benefits: [
-                    "ได้ระบบจองคิวที่ใช้งานจริงผ่านเครือข่าย",
-                    "พัฒนาทักษะการเขียนโปรแกรมและฐานข้อมูล MySQL",
-                    "เรียนรู้การใช้ AI เป็นเครื่องมือช่วยพัฒนาโครงการ"
-                ]
-            }
+            { id: '1', title: "LAB ACCESS SYSTEM", sub: "1. การพัฒนาเว็บไซต์เข้าใช้ห้องปฏิบัติการคอมพิวเตอร์", img: "https://image2url.com/r2/default/files/1770270328767-4f665d1c-74e9-4ae6-b0c2-7f372a21abaf.png", creatorImg: "https://image2url.com/r2/default/files/1770269586586-ba8fd498-994c-4635-86f5-4a1f685eaa1e.png", creators: ["นางสาวดลลชา ตราทอง", "นางสาวดวงพร สิทธิจันทร์"], objectives: ["พัฒนาระบบดิจิทัลที่มีประสิทธิภาพ", "ศึกษาและประเมินประสิทธิภาพการใช้งาน"], benefits: ["ลดขั้นตอนเอกสารแบบเดิม", "เข้าถึงข้อมูลง่ายและเป็นระเบียบ"] },
+            { id: '2', title: "BENWIRA BOOKING", sub: "2. การพัฒนาเว็บไซต์จองที่พัก BENWIRA", img: "https://image2url.com/r2/default/files/1770275641316-44e314b2-6431-49d3-aab6-a67617edaa25.png", creatorImg: "https://image2url.com/r2/default/files/1770275567233-2cdd4015-9532-41cb-b51f-a20b78061054.png", creators: ["นางสาวเบ็ญจมาภรณ์ อุ่นอ่อน", "นางสาววิภาลินี ภักดี"], objectives: ["ออกแบบเว็บไซต์จองคิวออนไลน์", "ศึกษาความพึงพอใจของผู้ใช้"], benefits: ["เพิ่มความสะดวกในการจองที่พัก", "จัดการฐานข้อมูล MySQL อย่างเป็นระบบ"] },
+            { id: '3', title: "SMART EDUCATION", sub: "3. การพัฒนาระบบ Smart Education", img: "https://image2url.com/r2/default/files/1770270350191-9044493b-483f-495c-9c6a-178b44f0df68.png", creatorImg: "https://image2url.com/r2/default/files/1770276058060-bdbadc1a-7563-43e2-9a79-70963e8b86ce.png", creators: ["นายลิขิต ไไหลล้น", "นายสุวิจักขณ์ หงษ์ศาลา"], objectives: ["บันทึกเวลาเรียนและส่งงานออนไลน์", "ลดภาระการจัดเก็บไฟล์งาน"], benefits: ["ตรวจสอบสถานะงานได้ทันที", "ระบบจัดการข้อมูลรวดเร็วขึ้น"] },
+            { id: '4', title: "COLLEGE PR MEDIA", sub: "4. การผลิตสื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัย", img: "https://image2url.com/r2/default/files/1770278426552-d66b5a92-4c38-4729-86bc-76363cf139d8.png", creatorImg: "https://image2url.com/r2/default/files/1770276449008-aec8b66a-0518-4923-ad86-5a8ec6fe5866.png", creators: ["นางสาวชนัญธิดา สิมุฒิ", "นางสาวชไมพร รื่นเริง"], objectives: ["ผลิตสื่อ PR คุณภาพสูง", "ส่งเสริมภาพลักษณ์วิทยาลัย"], benefits: ["ผู้คนเข้าถึงข้อมูลได้น่าสนใจมากขึ้น", "กระจายข่าวสารอย่างมีประสิทธิภาพ"] },
+            { id: '5', title: "ROYAL MOTION ART", sub: "5. การผลิตสื่อ Motion Art 70 ปีแห่งพระเมตตา", img: "https://image2url.com/r2/default/files/1770271583761-fc0daa93-045e-458a-a349-601e469c6c55.png", creatorImg: "https://image2url.com/r2/default/files/1770270006179-472e3176-ee83-44f3-9470-9b4d45430659.png", creators: ["นางสาวกัญญาภัค ศรีเสน", "นางสาวกัญญาณัฐ ศรีเสน"], objectives: ["ผลิตสื่อด้วย Canva ระดับมืออาชีพ", "ประเมินประสิทธิภาพสื่อ Motion Art"], benefits: ["พัฒนาทักษะด้าน Animation ขั้นสูง", "สื่อสารข้อมูลเชิงศิลป์ให้น่าประทับใจ"] },
+            { id: '6', title: "UDOMSUK QUEUE", sub: "6. ระบบจองคิวร้านอาหารอุดมสุข", img: "https://image2url.com/r2/default/files/1770271649022-acfec717-4bb7-4f08-8337-7864cb700977.png", creatorImg: "https://image2url.com/r2/default/files/1770276635955-0156573d-15e4-424a-9f46-164f90f350d6.png", creators: ["นางสาวพิมพ์ลภัส เนินผา", "นางสาวอัมพร ขันทหัส"], objectives: ["ลดการรอคิวหน้าร้านอาหาร", "พัฒนาระบบหลังบ้านที่มีประสิทธิภาพ"], benefits: ["ลูกค้าจองคิวได้ล่วงหน้า", "ร้านบริหารจัดการโต๊ะได้แม่นยำ"] },
+            { id: '7', title: "AI GREEN DIGITAL", sub: "7. สื่อ AI ต่อการส่งเสริม Green Digital", img: "https://image2url.com/r2/default/files/1770271787974-4eca9685-14c2-4e76-9516-d51acb07036f.png", creatorImg: "https://image2url.com/r2/default/files/1770276886657-45df596d-2803-43c9-a8a1-cbb7639d4d74.png", creators: ["นายภวพล เหมาะเจาะ", "นายนันทวัฒน์ หงษ์ทอง"], objectives: ["ใช้ AI สร้างสื่อแนวทาง Green Digital", "รณรงค์การใช้เทคโนโลยีที่เป็นมิตรต่อโลก"], benefits: ["สร้างความตระหนักด้านสิ่งแวดล้อม", "สาธิตการทำงานร่วมกับ AI"] },
+            { id: '8', title: "2D MOTION GRAPHIC", sub: "8. Motion Graphic 2D แนะนำวิทยาลัย", img: "https://image2url.com/r2/default/files/1770271685605-e6944e59-794a-4024-851d-2a18ca0a2b49.png", creatorImg: "https://image2url.com/r2/default/files/1770277283240-43cdedf4-e529-413e-8d56-60a601637309.png", creators: ["นางสาวสุฑิตา ยิ่งยงสันต์", "นางสาวอภิญญา ชายทวีป"], objectives: ["แนะนำวิทยาลัยผ่านงานอนิเมชัน 2D", "ศึกษาพฤติกรรมการรับชมสื่อ"], benefits: ["สื่อทันสมัยและเข้าใจง่าย", "เพิ่มการรับรู้ถึงแผนกวิชาต่างๆ"] },
+            { id: '9', title: "DENTAL CLINIC QUEUE", sub: "9. ระบบจองคิวคลินิกหมอฟันยิ้ม", img: "https://image2url.com/r2/default/files/1770271692165-9669c1da-888a-4388-b716-daa1d105182c.png", creatorImg: "https://image2url.com/r2/default/files/1770277672724-083212e2-b521-4792-8405-d6f2be853af7.png", creators: ["นางสาวพิมพรรณ จันเขียว", "นางสาวอรทัย ปาตะศรี"], objectives: ["พัฒนาการนัดหมายทันตกรรมออนไลน์", "ลดเวลาการรอคอยในคลินิก"], benefits: ["ผู้ป่วยนัดหมายได้ตลอด 24 ชม.", "คลินิกจัดการคิวได้เป็นระบบ"] },
+            { id: '10', title: "RPG LEARNING GAME", sub: "10. สื่อการเรียนรู้รูปแบบเกม RPG", img: "https://image2url.com/r2/default/files/1770278221988-d0665551-c23f-43ec-9d06-9413aa45119a.png", creatorImg: "https://image2url.com/r2/default/files/1770278081373-a55557a6-16b7-4f14-8900-09845618e488.png", creators: ["นายอติคุณ บุญพุท", "นางสาวอรสา กิ่งแสง"], objectives: ["ใช้ Google AI พัฒนาเนื้อหาเกม", "ส่งเสริมการเรียนรู้แบบ Interactive"], benefits: ["นักเรียนมีความสุขกับการเรียน", "เพิ่มประสิทธิภาพการจำผ่านเกม"] },
+            { id: '11', title: "NAIL SALON QUEUE", sub: "11. ระบบจองคิวร้านทำเล็บ", img: "https://image2url.com/r2/default/files/1770271707904-b2988bfb-bdc3-4a29-b55d-a4cbc52f2396.png", creatorImg: "https://image2url.com/r2/default/files/1770278169754-e0691ade-e822-442e-b48d-bc9fdf88331a.png", creators: ["นางสาวสุริษา หอมใจ", "นางสาวสุมิตรา สุภานิช"], objectives: ["บริหารตารางงานช่างทำเล็บ", "พัฒนาระบบจองที่ใช้งานง่าย"], benefits: ["ลดปัญหาคิวชนกัน", "ลูกค้าประทับใจในความเป็นมืออาชีพ"] }
         ];
 
-        const sfx = {};
         let bgmAudio = document.getElementById('bgm-audio');
         let masterTl = gsap.timeline({ paused: true });
-        let currentIdx = 0;
-
-        function createParticleBurst(x, y, color = 'var(--accent-cyan)') {
-            const particleCount = 6; // Reduced from 10
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.background = color;
-                document.body.appendChild(particle);
-                
-                const angle = (Math.PI * 2 * i) / particleCount;
-                const velocity = 80 + Math.random() * 60; // Reduced velocity
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
-                
-                gsap.to(particle, {
-                    x: tx,
-                    y: ty,
-                    opacity: 0,
-                    scale: 0,
-                    duration: 0.5,
-                    ease: "power2.out",
-                    onComplete: () => particle.remove()
-                });
-            }
-        }
-
-        function triggerGlitch() {
-            const glitch = document.getElementById('glitch');
-            gsap.timeline()
-                .set(glitch, { opacity: 0.8 }) // Reduced opacity
-                .to(glitch, { opacity: 0, duration: 0.15 });
-        }
-
-        function setVignetteColor(color1, color2) {
-            const vignette = document.getElementById('vignette');
-            vignette.style.background = `radial-gradient(circle at center, transparent 30%, ${color1} 70%, ${color2} 100%)`;
-            gsap.to(vignette, { opacity: 0.4, duration: 1 });
-        }
-
-        function prebootAudio() {
-            bgmAudio.src = audioFiles.bgm;
-            bgmAudio.preload = 'auto';
-            bgmAudio.load();
-            
-            let loadedCount = 0;
-            const totalSounds = 4;
-            
-            const checkAllLoaded = () => {
-                loadedCount++;
-                if (loadedCount >= totalSounds) {
-                    document.getElementById('start-btn').disabled = false;
-                    document.getElementById('start-btn').innerText = "INITIALIZE SYSTEM";
-                    document.getElementById('loading-hint').innerText = "AUDIO_STREAM: STABLE • READY";
-                }
-            };
-            
-            bgmAudio.addEventListener('canplaythrough', checkAllLoaded, { once: true });
-
-            sfx.spin = new Audio(audioFiles.spin);
-            sfx.spin.preload = 'auto';
-            sfx.spin.load();
-            sfx.spin.addEventListener('canplaythrough', checkAllLoaded, { once: true });
-            
-            sfx.impact = new Audio(audioFiles.impact);
-            sfx.impact.preload = 'auto';
-            sfx.impact.load();
-            sfx.impact.addEventListener('canplaythrough', checkAllLoaded, { once: true });
-            
-            sfx.whoosh = new Audio(audioFiles.whoosh);
-            sfx.whoosh.preload = 'auto';
-            sfx.whoosh.load();
-            sfx.whoosh.addEventListener('canplaythrough', checkAllLoaded, { once: true });
-        }
-
-        async function playSfx(name, vol = 0.25) {
-            const sound = sfx[name];
-            if (sound && sound.readyState >= 2) { 
-                try { 
-                    sound.currentTime = 0; 
-                    sound.volume = vol; 
-                    sound.play().catch(() => {}); 
-                } catch(e) {} 
-            }
-        }
-
-        async function startSpinSfx(vol = 0.2) {
-            if (sfx.spin && sfx.spin.readyState >= 2) {
-                sfx.spin.loop = true;
-                sfx.spin.volume = vol;
-                try { sfx.spin.play().catch(() => {}); } catch(e) {}
-            }
-        }
-
-        function stopSpinSfx() {
-            if (sfx.spin) { 
-                sfx.spin.pause(); 
-                sfx.spin.currentTime = 0; 
-                sfx.spin.loop = false; 
-            }
-        }
-
-        document.getElementById('start-btn').addEventListener('click', () => {
-            gsap.to("#start-screen", { opacity: 0, duration: 0.6, onComplete: () => {
-                document.getElementById('start-screen').remove();
-                bgmAudio.play().catch(e => console.warn(e));
-                masterTl.play();
-            }});
-        });
+        const sfx = {};
+        let currentProjectIndex = 0;
 
         function init() {
             const track = document.getElementById('num-track');
             const rig = document.getElementById('camera-rig');
-            const outro = document.getElementById('outro');
             const posterCarousel = document.getElementById('poster-carousel-container');
+            const hexStream = document.getElementById('hex-stream');
 
-            prebootAudio();
+            bgmAudio.src = audioFiles.bgm;
+            sfx.spin = new Audio(audioFiles.spin);
+            sfx.impact = new Audio(audioFiles.impact);
 
-            // Create poster carousel items
-            projects.forEach((p) => {
-                const posterItem = document.createElement('div');
-                posterItem.className = 'showcase-poster-item';
-                posterItem.innerHTML = `<img src="${p.img}" alt="${p.title}">`;
-                posterCarousel.appendChild(posterItem);
-            });
+            // Populate Hex Data for UI busy-ness
+            for(let h=0; h<30; h++) {
+                const span = document.createElement('span');
+                span.innerText = Math.random().toString(16).substr(2, 6).toUpperCase();
+                hexStream.appendChild(span);
+            }
 
+            // Populate Number Track
             const spinValues = projects.map(p => p.id.padStart(2, '0'));
-            for (let r = 0; r < 12; r++) {
+            for (let r = 0; r < 15; r++) {
                 spinValues.forEach(val => {
                     const div = document.createElement('div');
-                    div.className = 'number-item';
-                    div.innerText = val;
-                    div.setAttribute('data-number', val);
+                    div.className = 'number-item'; div.innerText = val;
                     track.appendChild(div);
                 });
             }
 
+            // Create Project Scenes
             projects.forEach((p) => {
                 const div = document.createElement('div');
-                div.className = 'scene project-scene';
-                div.id = `scene-${p.id}`;
+                div.className = 'scene'; div.id = `scene-${p.id}`;
                 div.innerHTML = `
                     <div class="content-layout">
-                        <div class="creator-box">
-                            <div class="node-tag">NODE: 0${p.id}</div>
+                        <div class="creator-box photo-frame">
+                            <div class="node-tag">UNIT_0${p.id}_ACTIVE</div>
+                            <div class="bracket-overlay"><div class="b-top"></div><div class="b-bottom"></div></div>
+                            <div class="scan-bar"></div>
                             <div class="creator-inner"><img src="${p.creatorImg}"></div>
                         </div>
                         <div class="info-panel">
                             <div class="title-punch">${p.title}</div>
                             <div class="subtitle-thai">${p.sub}</div>
-                            
-                            <div class="info-section">
-                                <div class="section-title">ผู้จัดทำ</div>
-                                <div class="creators-row">
-                                    ${p.creators.map(creator => `<div class="creator-tag">${creator}</div>`).join('')}
-                                </div>
-                            </div>
-
-                            <div class="info-section">
-                                <div class="section-title">วัตถุประสงค์</div>
-                                <ul class="info-list">
-                                    ${p.objectives.map(obj => `<li>${obj}</li>`).join('')}
-                                </ul>
-                            </div>
-
-                            <div class="info-section">
-                                <div class="section-title">ประโยชน์ที่คาดว่าจะได้รับ</div>
-                                <ul class="info-list">
-                                    ${p.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
-                                </ul>
-                            </div>
+                            <div class="info-section"><div class="section-title">Team Creators</div><div class="creators-row">${p.creators.map(c=>`<div class="creator-tag">${c}</div>`).join('')}</div></div>
+                            <div class="info-section"><div class="section-title">Project Objective</div><ul class="info-list">${p.objectives.map(o=>`<li>${o}</li>`).join('')}</ul></div>
+                            <div class="info-section"><div class="section-title">Key Benefits</div><ul class="info-list">${p.benefits.map(b=>`<li>${b}</li>`).join('')}</ul></div>
                         </div>
                     </div>
                 `;
-                rig.insertBefore(div, outro);
+                rig.insertBefore(div, document.getElementById('outro'));
+
+                const posterDiv = document.createElement('div');
+                posterDiv.className = 'showcase-poster-item';
+                posterDiv.innerHTML = `<img src="${p.img}">`;
+                posterCarousel.appendChild(posterDiv);
             });
+
+            setTimeout(() => {
+                const btn = document.getElementById('start-btn');
+                btn.disabled = false; btn.innerText = "INITIALIZE SYSTEM";
+            }, 2000);
 
             buildTimeline();
         }
 
         function buildTimeline() {
-            const numItems = document.querySelectorAll('.number-item');
-            if (numItems.length === 0) return;
-            const cardH = numItems[0].offsetHeight;
             const drawStage = document.getElementById('draw-stage');
-            const boxL = document.getElementById('box-l');
-            const boxR = document.getElementById('box-r');
-
-            const vignetteColors = [
-                ['rgba(0, 100, 150, 0.3)', 'rgba(0, 0, 0, 0.9)'],
-                ['rgba(100, 0, 150, 0.3)', 'rgba(0, 0, 0, 0.9)'],
-                ['rgba(0, 150, 100, 0.3)', 'rgba(0, 0, 0, 0.9)'],
-                ['rgba(150, 100, 0, 0.3)', 'rgba(0, 0, 0, 0.9)']
-            ];
+            const track = document.getElementById('num-track');
+            const lockBracket = document.getElementById('lock-bracket');
+            
+            // Get precise item height
+            const counter = document.querySelector('.center-counter');
+            const itemHeight = counter.offsetHeight || 250;
 
             projects.forEach((p, i) => {
+                const label = `project_${i}`;
+                masterTl.addLabel(label);
+
                 masterTl.add(() => {
-                    currentIdx = i;
-                    
-                    boxL.innerHTML = `
-                        <div class="side-box-inner">
-                            <div class="poster-carousel" id="carousel-l">
-                                <img src="${p.img}">
-                            </div>
-                        </div>
-                        <div class="side-label">POSTER_L: GROUP_${p.id}</div>
-                    `;
-                    
-                    boxR.innerHTML = `
-                        <div class="side-box-inner">
-                            <div class="poster-carousel" id="carousel-r">
-                                <img src="${p.img}">
-                            </div>
-                        </div>
-                        <div class="side-label">POSTER_R: GROUP_${p.id}</div>
-                    `;
-                    
-                    gsap.set("#carousel-l, #carousel-r", { x: 0 });
+                    currentProjectIndex = i;
+                    document.getElementById('status-text').innerText = `SYSTEM: SCANNING_NODE_0${p.id}`;
+                    document.getElementById('box-l').innerHTML = `<div class="img-wrapper"><div class="scan-bar"></div><img src="${p.img}"><div class="side-label">FILE_0${p.id}_L</div></div>`;
+                    document.getElementById('box-r').innerHTML = `<div class="img-wrapper"><div class="scan-bar"></div><img src="${p.img}"><div class="side-label">FILE_0${p.id}_R</div></div>`;
+                    gsap.set(lockBracket, { opacity: 0, scale: 1.5 });
                 });
 
                 masterTl.set(drawStage, { autoAlpha: 1 });
-                masterTl.fromTo(drawStage, 
-                    { autoAlpha: 0, scale: 0.9 }, 
-                    { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
-                );
+                masterTl.fromTo(drawStage, { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.6, ease: "power2.out" });
                 
+                // Rotation Loop Target
                 const targetPos = (projects.length * 8) + i; 
-                masterTl.add(() => startSpinSfx(0.3), "-=0.5"); 
                 
-                masterTl.fromTo("#num-track", 
-                    { y: -(targetPos * cardH) + cardH }, 
+                masterTl.add(() => { 
+                    sfx.spin.play(); 
+                    gsap.set(track, { filter: 'blur(8px)' }); // Motion Blur ON
+                }, "-=0.3");
+
+                masterTl.fromTo(track, 
+                    { y: -((targetPos - 5) * itemHeight) }, 
                     { 
-                        y: -(targetPos * cardH), 
-                        duration: 3.2, 
+                        y: -(targetPos * itemHeight), 
+                        duration: 3, 
                         ease: "expo.inOut",
-                        onComplete: () => { stopSpinSfx(); } 
-                    },
-                    "-=0.5"
+                        onUpdate: function() {
+                            // Subtle shake during high velocity
+                            if (this.progress() > 0.2 && this.progress() < 0.8) {
+                                gsap.set(drawStage, { x: Math.random()*2-1, y: Math.random()*2-1 });
+                            } else {
+                                gsap.set(drawStage, { x: 0, y: 0 });
+                            }
+                        }
+                    }, "-=0.2"
                 );
                 
-                masterTl.add(() => {
-                    playSfx('impact', 0.3);
-                    gsap.fromTo("#flash", { opacity: 0.4 }, { opacity: 0, duration: 0.4 });
-                    triggerGlitch();
-                    createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, 'var(--accent-cyan)');
-                });
-                
-                masterTl.to(drawStage, { 
-                    autoAlpha: 0, 
-                    duration: 0.4, 
-                    scale: 1.1,
-                    rotation: 1,
-                    ease: "power2.in"
-                }, "+=0.2");
-
-                const scene = document.querySelector(`#scene-${p.id}`);
-                const vignetteIdx = i % vignetteColors.length;
-                
-                masterTl.add(() => {
-                    setVignetteColor(vignetteColors[vignetteIdx][0], vignetteColors[vignetteIdx][1]);
-                });
-                
-                masterTl.fromTo(scene, 
-                    { autoAlpha: 0, scale: 0.85, rotationY: -15 },
-                    { autoAlpha: 1, scale: 1, rotationY: 0, duration: 0.8, ease: "power2.out" },
-                    "-=0.2"
-                );
-                
-                masterTl.fromTo(scene.querySelector('.creator-box'), 
-                    { y: -50, opacity: 0, rotationX: -20 }, 
-                    { y: 0, opacity: 1, rotationX: 0, duration: 1, ease: "back.out(2)" }, 
-                    "-=0.6"
-                );
-                
-                masterTl.fromTo(scene.querySelector('.info-panel'), 
-                    { y: 50, opacity: 0, scale: 0.9 }, 
-                    { y: 0, opacity: 1, scale: 1, duration: 1, ease: "back.out(1.8)" }, 
-                    "-=0.8"
-                );
-
-                const infoSections = scene.querySelectorAll('.info-section');
-                infoSections.forEach((section, idx) => {
-                    masterTl.fromTo(section,
-                        { opacity: 0, x: -30 },
-                        { 
-                            opacity: 1, 
-                            x: 0, 
-                            duration: 0.8,
-                            ease: "power2.out"
-                        },
-                        `-=${0.6 - (idx * 0.15)}`
-                    );
+                masterTl.add(() => { 
+                    sfx.spin.pause(); sfx.spin.currentTime = 0; 
+                    sfx.impact.play(); 
+                    gsap.set(track, { filter: 'blur(0px)' }); // Motion Blur OFF
+                    gsap.fromTo("#flash", {opacity: 0.5}, {opacity:0, duration:0.4}); 
+                    
+                    // Lock Target Effect
+                    gsap.to(lockBracket, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" });
+                    gsap.to(lockBracket, { scale: 1.05, repeat: 3, yoyo: true, duration: 0.1 });
                 });
 
-                masterTl.add(() => playSfx('whoosh', 0.25), "-=0.7");
+                const scene = document.getElementById(`scene-${p.id}`);
+                masterTl.to(drawStage, { autoAlpha: 0, duration: 0.5, scale: 1.2 }, "+=0.6");
+                masterTl.fromTo(scene, { autoAlpha: 0, scale: 0.9, y: 60 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.8, ease: "power3.out" });
                 
-                masterTl.to(scene, { 
-                    opacity: 0, 
-                    duration: 0.7, 
-                    scale: 1.05,
-                    rotationY: 10,
-                    filter: "blur(10px)",
-                    ease: "power2.inOut" 
-                }, "+=6");
-                
-                masterTl.to("#vignette", { opacity: 0, duration: 0.5 }, "-=0.5");
+                const sections = scene.querySelectorAll('.info-section');
+                masterTl.to(sections, { opacity: 1, x: 0, stagger: 0.15, duration: 0.7 }, "-=0.5");
+
+                masterTl.to({}, { duration: 8 }); // View time
+                masterTl.to(scene, { autoAlpha: 0, duration: 0.6, filter: "blur(15px)" });
             });
 
-            // Poster Showcase - Auto-scrolling carousel like reference image
+            // Final Showcase
+            masterTl.addLabel("showcase");
             const posterShowcase = document.getElementById('poster-showcase');
-            const posterCarousel = document.getElementById('poster-carousel-container');
-            const posterItems = document.querySelectorAll('.showcase-poster-item');
-            
-            // Show poster showcase
+            const posterContainer = document.getElementById('poster-carousel-container');
             masterTl.to(posterShowcase, { autoAlpha: 1, duration: 1 });
-            
-            // Calculate total width for smooth continuous auto-scroll
-            const itemWidth = Math.min(window.innerWidth * 0.9, 1400) + 40; // width + gap
-            const totalScrollDistance = itemWidth * projects.length;
-            const scrollDuration = projects.length * 8; // 8 seconds per poster (faster auto-scroll)
-            
-            // Smooth continuous auto-scroll from right to left (like reference image)
-            masterTl.to(posterCarousel, 
-                { 
-                    x: -totalScrollDistance,
-                    duration: scrollDuration,
-                    ease: "none", // Linear for smooth continuous auto-scroll
-                    force3D: true // GPU acceleration
-                }
-            );
-            
+            masterTl.to(posterContainer, { x: -4500, duration: projects.length * 5, ease: "none" });
             masterTl.to(posterShowcase, { autoAlpha: 0, duration: 1 });
 
-            // Ending with slide transition
-            const slideContainer = document.getElementById('slide-container');
+            // Outro
+            masterTl.addLabel("outro");
             masterTl.to("#outro", { autoAlpha: 1, duration: 1.5 });
-            
-            // Hold first slide for 5 seconds
-            masterTl.to({}, { duration: 5 });
-            
-            // Slide to right to show "Thank You" slide
-            masterTl.to(slideContainer, { 
-                x: '-100vw', 
-                duration: 1.5, 
-                ease: "power2.inOut" 
-            });
-            
-            // Hold thank you slide for 5 seconds
-            masterTl.to({}, { duration: 5 });
             
             masterTl.eventCallback("onUpdate", () => {
                 const time = masterTl.time();
-                document.getElementById('hud-timer').innerText = `ID_${Math.floor(time/60).toString().padStart(2,'0')}:${Math.floor(time%60).toString().padStart(2,'0')}:${Math.floor((time%1)*100).toString().padStart(2,'0')}:NODE_11`;
+                document.getElementById('hud-timer').innerText = `CLK_${Math.floor(time).toString().padStart(4, '0')}:UTC`;
             });
-            masterTl.eventCallback("onComplete", () => { masterTl.restart(); });
+            masterTl.eventCallback("onComplete", () => { masterTl.play(0); });
         }
+
+        function navNext() {
+            const nextIdx = (currentProjectIndex + 1) % projects.length;
+            masterTl.play(`project_${nextIdx}`);
+        }
+
+        function navPrev() {
+            const prevIdx = (currentProjectIndex - 1 + projects.length) % projects.length;
+            masterTl.play(`project_${prevIdx}`);
+        }
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            gsap.to("#start-screen", { opacity: 0, duration: 1, onComplete: () => {
+                document.getElementById('start-screen').remove();
+                bgmAudio.play();
+                masterTl.play();
+            }});
+        });
 
         window.onload = init;
     </script>
