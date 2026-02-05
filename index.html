@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INNOVATION 2026 | HIGH-TECH SHOWCASE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@200;300;400;600;700;800&family=Rajdhani:wght@400;600;700&family=Kanit:wght@300;400;600;700;900&family=Electrolize&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #000000;
+            --bg-deep: #05080a;
+            --grid-cyan: rgba(0, 255, 255, 0.08);
+            --accent-cyan: #00ffff;
+            --accent-pink: #ff00ff;
+            --accent-green: #00ff00;
+            --accent-orange: #ff6600;
+            --text-bright: #e0faff;
+            
+            --font-display: 'Electrolize', sans-serif;
+            --font-thai: 'Kanit', sans-serif;
+            --font-code: 'Rajdhani', monospace;
+            
+            --img-w: 26vw; 
+            --img-h: 32.5vw;
+            --center-w: 12vw;
+            --center-h: 15vw;
+            --creator-w: 20vw;
+            --creator-h: 25vw;
+
+            --glow-cyan: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(0, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --img-w: 38vw; --img-h: 47.5vw;
+                --center-w: 20vw; --center-h: 25vw;
+                --creator-w: 70vw; --creator-h: 87.5vw;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-bright);
+            font-family: var(--font-thai);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--grid-cyan) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-cyan) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            animation: scanlines 8s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes scanlines { from { transform: translateY(0); } to { transform: translateY(4px); } }
+
+        #start-screen {
+            position: fixed; inset: 0; background: var(--bg-void); z-index: 15000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #start-btn {
+            background: rgba(0, 255, 255, 0.08); 
+            border: 3px solid var(--accent-cyan); 
+            color: var(--accent-cyan);
+            padding: 22px 70px; 
+            font-size: 1.3rem; 
+            letter-spacing: 14px;
+            cursor: pointer; 
+            text-transform: uppercase;
+            font-family: var(--font-display); 
+            font-weight: 900;
+            position: relative; 
+            transition: all 0.4s;
+            backdrop-filter: blur(20px);
+            box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.15), 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+        #start-btn::before {
+            content: ''; position: absolute; inset: -3px;
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink), var(--accent-green), var(--accent-cyan));
+            background-size: 400% 400%; z-index: -1; opacity: 0;
+            transition: opacity 0.4s; animation: gradientShift 3s ease infinite;
+        }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        #start-btn:not(:disabled):hover::before { opacity: 0.6; }
+        #start-btn:not(:disabled):hover {
+            background: var(--accent-cyan); color: #000;
+            box-shadow: 0 0 80px var(--accent-cyan);
+            transform: scale(1.05);
+        }
+        #start-btn:disabled { opacity: 0.3; cursor: wait; }
+
+        #draw-stage {
+            position: fixed; inset: 0; z-index: 8000;
+            display: flex; justify-content: center; align-items: center;
+            background: #000; opacity: 0; visibility: hidden;
+        }
+        .draw-grid { 
+            display: flex; 
+            align-items: center; 
+            gap: 5vw; 
+            z-index: 8100; 
+        }
+        
+        .side-box {
+            width: var(--img-w); 
+            height: var(--img-h); 
+            border: 4px solid var(--accent-cyan);
+            background: linear-gradient(135deg, rgba(0, 20, 40, 0.8), rgba(0, 10, 20, 0.9)); 
+            box-shadow: var(--glow-cyan), inset 0 0 50px rgba(0, 255, 255, 0.1);
+            overflow: hidden; 
+            position: relative;
+            padding: 8px;
+        }
+        .side-box::before {
+            content: ''; 
+            position: absolute; 
+            inset: 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .side-box::after {
+            content: ''; 
+            position: absolute; 
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 48%, rgba(0,255,255,0.3) 50%, transparent 52%);
+            background-size: 100% 30px;
+            animation: scanPoster 3s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes scanPoster { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+
+        .side-box-inner {
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            position: relative;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+        }
+        .poster-carousel {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            will-change: transform;
+        }
+        .poster-carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+            filter: brightness(0.9) contrast(1.1);
+        }
+        
+        .side-label {
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            color: #000; 
+            font-size: 11px; 
+            text-align: center; 
+            font-weight: 900; 
+            padding: 6px 0;
+            font-family: var(--font-code); 
+            letter-spacing: 3px;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        /* === ENHANCED CENTER SPINNER === */
+        .center-scouter {
+            position: relative;
+            width: var(--center-w);
+            height: var(--center-h);
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        
+        /* หลายวงกลมซ้อนกัน */
+        .center-scouter::before {
+            content: ''; 
+            position: absolute; 
+            width: 145%; 
+            height: 145%;
+            border: 3px solid rgba(0,255,255,0.6); 
+            border-radius: 50%;
+            z-index: 9; 
+            pointer-events: none;
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.7),
+                inset 0 0 40px rgba(0, 255, 255, 0.3);
+            animation: pulseOuter 2s ease-in-out infinite;
+        }
+
+        .center-scouter::after {
+            content: ''; 
+            position: absolute; 
+            width: 120%; 
+            height: 120%;
+            border: 2px solid rgba(255, 0, 255, 0.5); 
+            border-radius: 50%;
+            z-index: 8; 
+            pointer-events: none;
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
+            animation: pulseMiddle 2.5s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulseOuter {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.08) rotate(180deg); opacity: 1; }
+        }
+
+        @keyframes pulseMiddle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.05) rotate(-180deg); opacity: 0.9; }
+        }
+
+        /* เส้นแฉก 4 ด้าน */
+        .scouter-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--accent-orange), transparent);
+            z-index: 10;
+            pointer-events: none;
+        }
+        .line-h { width: 140%; height: 3px; animation: lineGlowH 1.5s ease-in-out infinite; }
+        .line-v { width: 3px; height: 140%; animation: lineGlowV 1.5s ease-in-out infinite 0.75s; }
+        
+        @keyframes lineGlowH {
+            0%, 100% { opacity: 0.3; box-shadow: 0 0 10px var(--accent-orange); }
+            50% { opacity: 1; box-shadow: 0 0 30px var(--accent-orange), 0 0 50px var(--accent-orange); }
+        }
+        @keyframes lineGlowV {
+            0%, 100% { opacity: 0.3; box-shadow: 0 0 10px var(--accent-orange); }
+            50% { opacity: 1; box-shadow: 0 0 30px var(--accent-orange), 0 0 50px var(--accent-orange); }
+        }
+
+        /* มุมเหลี่ยม */
+        .scouter-bracket {
+            position: absolute; 
+            width: 30px; 
+            height: 30px; 
+            border: 3px solid var(--accent-green); 
+            z-index: 11;
+            animation: bracketPulse 1s ease-in-out infinite;
+        }
+        .b-tl { top: -20px; left: -20px; border-right: none; border-bottom: none; }
+        .b-tr { top: -20px; right: -20px; border-left: none; border-bottom: none; }
+        .b-bl { bottom: -20px; left: -20px; border-right: none; border-top: none; }
+        .b-br { bottom: -20px; right: -20px; border-left: none; border-top: none; }
+
+        @keyframes bracketPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* กล่องตัวเลขที่สวยขึ้น */
+        .center-counter {
+            width: 100%; 
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(0, 40, 80, 0.95), rgba(0, 10, 30, 0.98)),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1), transparent 70%);
+            border: 3px solid rgba(0,255,255,0.7);
+            overflow: hidden; 
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 
+                inset 0 0 50px rgba(0, 255, 255, 0.4),
+                0 0 60px rgba(0, 255, 255, 0.5);
+        }
+
+        /* เอฟเฟกต์แสงเคลื่อนที่ */
+        .center-counter::before {
+            content: '';
+            position: absolute;
+            inset: -100%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(0, 255, 255, 0.3) 50%,
+                transparent 70%
+            );
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from { transform: translateX(-100%) translateY(-100%); }
+            to { transform: translateX(100%) translateY(100%); }
+        }
+
+        .number-track { 
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+            will-change: transform;
+            position: relative;
+            z-index: 1;
+        }
+        .number-item {
+            width: 100%; 
+            height: var(--center-h); 
+            flex-shrink: 0;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: clamp(2.8rem, 5.5vw, 4.5rem); 
+            font-weight: 900;
+            color: var(--accent-cyan); 
+            font-family: var(--font-display);
+            text-shadow: 
+                0 0 20px var(--accent-cyan), 
+                0 0 40px rgba(0, 255, 255, 0.8),
+                0 0 60px rgba(0, 255, 255, 0.5);
+            position: relative;
+        }
+
+        /* เพิ่มเอฟเฟกต์เลขที่วิ่งผ่าน */
+        .number-item::after {
+            content: attr(data-number);
+            position: absolute;
+            color: rgba(255, 0, 255, 0.3);
+            transform: scale(1.2);
+            filter: blur(2px);
+        }
+
+        /* === PROJECT SCENE - CENTERED LAYOUT === */
+        #camera-rig { position: relative; width: 100%; height: 100%; }
+        .scene { 
+            position: absolute; 
+            inset: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            visibility: hidden; 
+            overflow: hidden;
+            background: var(--bg-void);
+        }
+
+        .content-layout {
+            position: relative; 
+            z-index: 200; 
+            width: 95%; 
+            max-width: 1800px;
+            height: 100%;
+            display: flex; 
+            flex-direction: row;
+            align-items: center; 
+            justify-content: center;
+            gap: 4vw;
+            padding: 0 3vw;
+        }
+
+        @media (max-width: 1024px) { 
+            .content-layout { 
+                flex-direction: column;
+                gap: 2vh; 
+            } 
+        }
+
+        .creator-box {
+            width: var(--creator-w); 
+            height: var(--creator-h); 
+            background: linear-gradient(135deg, rgba(0, 40, 60, 0.8), rgba(0, 20, 30, 0.9));
+            border: 4px solid var(--accent-cyan); 
+            box-shadow: var(--glow-cyan), inset 0 0 40px rgba(0, 255, 255, 0.15);
+            position: relative; 
+            padding: 10px; 
+            overflow: hidden; 
+            flex-shrink: 0;
+        }
+        .creator-inner { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            position: relative; 
+            border: 2px solid rgba(0,255,255,0.4); 
+        }
+        .creator-inner img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.95) contrast(1.05);
+        }
+        
+        .node-tag {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            color: #000; 
+            font-family: var(--font-code); 
+            font-size: 12px; 
+            font-weight: 900;
+            padding: 8px 22px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* === INFO PANEL - CENTERED === */
+        .info-panel {
+            flex: 1;
+            max-width: 1000px;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title-punch { 
+            font-size: clamp(2.8rem, 5vw, 4.5rem); 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            color: #fff; 
+            line-height: 1.1;
+            font-family: var(--font-display);
+            text-shadow: 
+                3px 3px 0 var(--accent-cyan), 
+                6px 6px 0 var(--accent-pink),
+                0 0 50px rgba(0, 255, 255, 1),
+                0 0 80px rgba(0, 255, 255, 0.6),
+                0 0 100px rgba(255, 0, 255, 0.4);
+            margin-bottom: 20px;
+            letter-spacing: 6px;
+            text-align: center;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 
+                    3px 3px 0 var(--accent-cyan), 
+                    6px 6px 0 var(--accent-pink),
+                    0 0 50px rgba(0, 255, 255, 1),
+                    0 0 80px rgba(0, 255, 255, 0.6);
+            }
+            50% { 
+                text-shadow: 
+                    3px 3px 0 var(--accent-cyan), 
+                    6px 6px 0 var(--accent-pink),
+                    0 0 70px rgba(0, 255, 255, 1),
+                    0 0 100px rgba(0, 255, 255, 0.8),
+                    0 0 120px rgba(255, 0, 255, 0.5);
+            }
+        }
+
+        .subtitle-thai {
+            font-family: var(--font-thai); 
+            font-weight: 500; 
+            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            color: var(--accent-green); 
+            letter-spacing: 1.5px;
+            padding: 12px 25px; 
+            border-left: 5px solid var(--accent-green);
+            border-right: 5px solid var(--accent-green);
+            display: inline-block; 
+            text-shadow: 
+                0 0 25px rgba(0, 255, 0, 0.8),
+                0 0 40px rgba(0, 255, 0, 0.5);
+            background: linear-gradient(90deg, rgba(0, 255, 0, 0.15), rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.15));
+            margin-bottom: 30px;
+            align-self: center;
+            position: relative;
+        }
+
+        .subtitle-thai::before,
+        .subtitle-thai::after {
+            content: '◆';
+            position: absolute;
+            color: var(--accent-green);
+            font-size: 0.8em;
+            text-shadow: 0 0 20px var(--accent-green);
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+
+        .subtitle-thai::before {
+            left: 8px;
+        }
+
+        .subtitle-thai::after {
+            right: 8px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        .info-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            text-shadow: 
+                0 0 25px rgba(0, 255, 255, 0.8),
+                0 0 40px rgba(0, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '▸';
+            color: var(--accent-pink);
+            font-size: 1.8em;
+            text-shadow: 
+                0 0 20px var(--accent-pink),
+                0 0 35px var(--accent-pink);
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            50% { transform: translateX(5px); opacity: 0.6; }
+        }
+
+        .info-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-list li {
+            font-family: var(--font-thai);
+            font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+            color: var(--text-bright);
+            line-height: 1.8;
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            font-weight: 300;
+        }
+
+        .info-list li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-size: 1em;
+            text-shadow: 
+                0 0 15px var(--accent-green),
+                0 0 25px rgba(0, 255, 0, 0.5);
+        }
+
+        .creators-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .creator-tag {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.08));
+            border: 2px solid var(--accent-cyan);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-family: var(--font-thai);
+            font-size: clamp(0.85rem, 1vw, 1rem);
+            color: var(--accent-cyan);
+            text-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.8),
+                0 0 30px rgba(0, 255, 255, 0.5);
+            font-weight: 400;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .creator-tag::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            from { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            to { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .hud-frame { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 9000; 
+            padding: 25px; 
+            pointer-events: none; 
+        }
+        .hud-line { 
+            position: absolute; 
+            width: 60px; 
+            height: 60px; 
+            border: 2px solid var(--accent-cyan); 
+            opacity: 0.4; 
+        }
+        .tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
+        .tr { top: 25px; right: 25px; border-left: none; border-bottom: none; }
+        .bl { bottom: 25px; left: 25px; border-right: none; border-top: none; }
+        .br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
+
+        .impact-flash { 
+            position: fixed; 
+            inset: 0; 
+            background: var(--accent-cyan); 
+            z-index: 10001; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10002;
+            opacity: 0;
+            pointer-events: none;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 0, 255, 0.1) 25%, 
+                transparent 50%, 
+                rgba(0, 255, 255, 0.1) 75%, 
+                transparent 100%);
+            background-size: 200% 100%;
+        }
+
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .dynamic-vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.3; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm-audio" loop crossOrigin="anonymous"></audio>
+
+    <div id="start-screen">
+        <div style="font-family: var(--font-code); font-size: 12px; color: var(--accent-cyan); letter-spacing: 12px; margin-bottom: 30px; animation: blink 1.5s infinite;">SYSTEM_CORE_INIT_2026</div>
+        <button id="start-btn" disabled>INITIALIZE SYSTEM</button>
+        <p style="margin-top: 30px; font-size: 12px; font-family: var(--font-thai); color: var(--accent-green); opacity: 0.7;" id="loading-hint">กำลังเตรียมไฟล์มัลติมีเดียความละเอียดสูง...</p>
+    </div>
+
+    <div class="impact-flash" id="flash"></div>
+    <div class="glitch-overlay" id="glitch"></div>
+    <div class="dynamic-vignette" id="vignette"></div>
+
+    <div class="hud-frame">
+        <div class="hud-line tl"></div><div class="hud-line tr"></div>
+        <div class="hud-line bl"></div><div class="hud-line br"></div>
+        <div style="display:flex; justify-content:space-between; font-family:var(--font-code); color:var(--accent-cyan); font-size:11px; padding: 15px; opacity: 0.7; letter-spacing: 3px;">
+            <div>SYNC_STATE: <span style="color: var(--accent-green);">CORE_AUTO</span></div>
+            <div id="hud-timer">00:00:00:00</div>
+        </div>
+    </div>
+
+    <div class="letterbox lb-t" style="position:fixed; top:0; width:100%; height:8vh; background:rgba(0,0,0,0.9); z-index:9500; border-bottom:1px solid rgba(0,255,255,0.2);"></div>
+    <div class="letterbox lb-b" style="position:fixed; bottom:0; width:100%; height:8vh; background:rgba(0,0,0,0.9); z-index:9500; border-top:1px solid rgba(0,255,255,0.2);"></div>
+
+    <div id="draw-stage">
+        <div class="draw-grid">
+            <div class="side-box" id="box-l"></div>
+            
+            <div class="center-scouter">
+                <div class="scouter-line line-h"></div>
+                <div class="scouter-line line-v"></div>
+                <div class="scouter-bracket b-tl"></div>
+                <div class="scouter-bracket b-tr"></div>
+                <div class="scouter-bracket b-bl"></div>
+                <div class="scouter-bracket b-br"></div>
+                <div class="center-counter"><div class="number-track" id="num-track"></div></div>
+            </div>
+
+            <div class="side-box" id="box-r"></div>
+        </div>
+    </div>
+
+    <div id="camera-rig">
+        <div class="scene" id="outro">
+            <div class="content-layout" style="text-align: center;">
+                <div class="title-punch" style="text-shadow: 0 0 50px var(--accent-cyan); font-size: clamp(2.5rem, 6vw, 5rem);">SEQUENCE_COMPLETE</div>
+                <div class="subtitle-thai" style="font-size: clamp(1.2rem, 2vw, 1.8rem);">นวัตกรรมดิจิทัล • วิทยาลัยเทคนิคอำนาจเจริญ • 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioFiles = {
+            bgm: "https://image2url.com/r2/default/videos/1770188444874-800b8249-5b6e-4bce-b759-cc0a1002957a.mp4", 
+            spin: "https://assets.mixkit.co/active_storage/sfx/2592/2592-preview.mp3",   
+            impact: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3", 
+            whoosh: "https://assets.mixkit.co/active_storage/sfx/2591/2591-preview.mp3"  
+        };
+
+        const projects = [
+            { 
+                id: '1', 
+                title: "LAB ACCESS SYSTEM", 
+                sub: "1. การพัฒนาเว็บไซต์เข้าใช้ห้องปฏิบัติการคอมพิวเตอร์", 
+                img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_01",
+                creators: ["นางสาวดลลชา ตราทอง", "นางสาวดวงพร สิทธิจันทร์"],
+                objectives: [
+                    "เพื่อพัฒนาระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์ในรูปแบบดิจิทัลให้มีประสิทธิภาพ",
+                    "เพื่อศึกษาและประเมินประสิทธิภาพของระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์"
+                ],
+                benefits: [
+                    "ได้พัฒนาระบบการเข้าใช้ห้องปฏิบัติการคอมพิวเตอร์ให้มีประสิทธิภาพ",
+                    "ได้พัฒนาระบบการเข้าใช้ห้องปฏิบัติการในรูปแบบดิจิทัลที่ใช้งานง่าย",
+                    "ได้ศึกษาประสิทธิภาพของผู้ใช้งานระบบการเข้าใช้ห้องปฏิบัติการ"
+                ]
+            },
+            { 
+                id: '2', 
+                title: "BENWIRA BOOKING", 
+                sub: "2. การพัฒนาเว็บไซต์จองที่พัก BENWIRA", 
+                img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_02",
+                creators: ["นางสาวเบ็ญจมาภรณ์ อุ่นอ่อน", "นางสาววิภาลินี ภักดี"],
+                objectives: [
+                    "เพื่อพัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับที่พักเบ็ญวิภา",
+                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อเว็บไซต์ระบบจองคิวออนไลน์สำหรับที่พักเบ็ญวิภา"
+                ],
+                benefits: [
+                    "ได้เว็บไซต์ระบบจองคิวที่สามารถใช้งานจริงผ่านเครือข่าย",
+                    "พัฒนาทักษะการเขียนโปรแกรมและการจัดการฐานข้อมูล MySQL",
+                    "เรียนรู้การใช้ AI (ChatGPT) เป็นเครื่องมือช่วยพัฒนาโครงการ"
+                ]
+            },
+            { 
+                id: '3', 
+                title: "SMART EDUCATION", 
+                sub: "3. การพัฒนาระบบ Smart Education", 
+                img: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_03",
+                creators: ["นายลิขิต ไหลล้น", "นายสุวิจักขณ์ หงษ์ศาลา"],
+                objectives: [
+                    "เพื่อพัฒนาระบบเว็บไซต์สำหรับบันทึกการเข้าเรียน การส่งงาน และการตรวจงาน",
+                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานระบบเว็บไซต์"
+                ],
+                benefits: [
+                    "ลดเวลาและขั้นตอนในการบันทึกการเข้าเรียนและรวบรวมไฟล์งาน",
+                    "ช่วยให้อาจารย์จัดการข้อมูลได้สะดวก รวดเร็ว และเป็นระบบมากขึ้น"
+                ]
+            },
+            { 
+                id: '4', 
+                title: "COLLEGE PR MEDIA", 
+                sub: "4. การผลิตสื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญ", 
+                img: "https://images.unsplash.com/photo-1523050335392-9bc5ad064f0a?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_04",
+                creators: ["นางสาวชนัญธิดา สิมุฒิ", "นางสาวชไมพร รื่นเริง"],
+                objectives: [
+                    "เพื่อผลิตสื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญ",
+                    "เพื่อศึกษาความพึงพอใจของผู้เข้าชมสื่อมัลติมีเดียประชาสัมพันธ์"
+                ],
+                benefits: [
+                    "ได้สื่อมัลติมีเดียประชาสัมพันธ์วิทยาลัยเทคนิคอำนาจเจริญที่มีคุณภาพ",
+                    "ได้ทราบระดับความพึงพอใจของผู้เข้าชมสื่อมัลติมีเดีย"
+                ]
+            },
+            { 
+                id: '5', 
+                title: "ROYAL MOTION ART", 
+                sub: "5. การผลิตสื่อ Motion Art 70 ปีแห่งพระเมตตา", 
+                img: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_05",
+                creators: ["นางสาวกัญญาภัค ศรีเสน", "นางสาวกัญญาณัฐ ศรีเสน"],
+                objectives: [
+                    "ผลิตสื่อ Motion Art \"70 ปีแห่งพระเมตตา\" ด้วย Canva ในระดับมืออาชีพ",
+                    "ประเมินประสิทธิภาพของ Canva ในการสร้างงาน Motion Art"
+                ],
+                benefits: [
+                    "ได้ผลิตสื่อ Motion Art \"70 ปีแห่งพระเมตตา\" คุณภาพสูง",
+                    "พัฒนาทักษะการใช้ Canva ขั้นสูงด้าน Animation และการลำดับภาพ",
+                    "กลุ่มเป้าหมายเข้าใจและเข้าถึงสื่อดิจิทัลได้ง่ายขึ้น"
+                ]
+            },
+            { 
+                id: '6', 
+                title: "UDOMSUK QUEUE", 
+                sub: "6. การพัฒนาเว็บไซต์ระบบจองคิวร้านอาหาร ร้านอาหารอุดมสุข", 
+                img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_06",
+                creators: ["นางสาวพิมพ์ลภัส เนินผา", "นางสาวอัมพร ขันทหัส"],
+                objectives: [
+                    "เพื่อพัฒนาเว็บไซต์ระบบจองคิวร้านอาหารอุดมสุข",
+                    "เพื่อศึกษาความพึงพอใจของผู้ใช้งานระบบจองคิว"
+                ],
+                benefits: [
+                    "ได้ระบบการจองคิวร้านอาหารอุดมสุขที่มีประสิทธิภาพ",
+                    "ผู้จัดทำโครงงานได้รับประสบการณ์และพัฒนาทักษะด้านการพัฒนาเว็บไซต์"
+                ]
+            },
+            { 
+                id: '7', 
+                title: "AI GREEN DIGITAL", 
+                sub: "7. การผลิตสื่อปัญญาประดิษฐ์ (AI) ต่อการส่งเสริม Green Digital", 
+                img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_07",
+                creators: ["นายภวพล เหมาะเจาะ", "นายนันทวัฒน์ หงษ์ทอง"],
+                objectives: [
+                    "ผลิตสื่อปัญญาประดิษฐ์ (AI) เพื่อส่งเสริมแนวคิด Green Digital",
+                    "ศึกษาความพึงพอใจของผู้ชมต่อสื่อ AI เพื่อการอนุรักษ์สิ่งแวดล้อม"
+                ],
+                benefits: [
+                    "สร้างความตระหนักรู้ด้านผลกระทบสิ่งแวดล้อมจากเทคโนโลยี",
+                    "ได้สื่อวิดีโอ AI ที่ย่อยข้อมูลซับซ้อนให้เข้าใจง่าย",
+                    "ส่งเสริมการปรับพฤติกรรมการใช้ดิจิทัลให้เป็นมิตรกับสิ่งแวดล้อม"
+                ]
+            },
+            { 
+                id: '8', 
+                title: "2D MOTION GRAPHIC", 
+                sub: "8. การผลิตสื่อ Motion Graphic 2D แนะนำวิทยาลัยเทคนิคอำนาจเจริญ", 
+                img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_08",
+                creators: ["นางสาวสุฑิตา ยิ่งยงสันต์", "นางสาวอภิญญา ชายทวีป"],
+                objectives: [
+                    "ผลิตสื่อ Motion Graphic 2D เพื่อแนะนำวิทยาลัยเทคนิคอำนาจเจริญ",
+                    "ประเมินความพึงพอใจต่อสื่อ Motion Graphic 2D"
+                ],
+                benefits: [
+                    "ส่งเสริมความคิดสร้างสรรค์ผ่านการออกแบบ Motion Graphic 2D",
+                    "พัฒนาทักษะด้านเทคโนโลยีดิจิทัล เช่น การสร้างอนิเมชันและตัดต่อภาพ",
+                    "เผยแพร่ข้อมูลและสร้างภาพลักษณ์ของวิทยาลัย"
+                ]
+            },
+            { 
+                id: '9', 
+                title: "DENTAL CLINIC QUEUE", 
+                sub: "9. การพัฒนาเว็บไซต์ระบบจองคิวออนไลน์สำหรับคลินิกหมอฟันยิ้ม", 
+                img: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_09",
+                creators: ["นางสาวพิมพรรณ จันเขียว", "นางสาวอรทัย ปาตะศรี"],
+                objectives: [
+                    "พัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับคลินิกหมอฟันยิ้ม",
+                    "ศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อเว็บไซต์"
+                ],
+                benefits: [
+                    "ได้เว็บไซต์ระบบจองคิวที่สามารถใช้งานจริงผ่านระบบเครือข่าย",
+                    "พัฒนาทักษะการเขียนโปรแกรมและการจัดการฐานข้อมูล",
+                    "เรียนรู้การใช้ AI เป็นเครื่องมือช่วยพัฒนาโครงการ"
+                ]
+            },
+            { 
+                id: '10', 
+                title: "RPG LEARNING GAME", 
+                sub: "10. การพัฒนาสื่อการเรียนรู้เชิงปฏิสัมพันธ์ในรูปแบบเกม RPG", 
+                img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_10",
+                creators: ["นายอติคุณ บุญพุท", "นางสาวอรสา กิ่งแสง"],
+                objectives: [
+                    "พัฒนาสื่อการเรียนรู้เชิงปฏิสัมพันธ์ในรูปแบบเกม RPG โดยใช้ Google AI Studio",
+                    "ประเมินระดับความพึงพอใจของผู้เรียนต่อสื่อเกม RPG"
+                ],
+                benefits: [
+                    "ได้สื่อการเรียนรู้แบบเกม RPG ที่สามารถใช้จัดการเรียนการสอนได้จริง",
+                    "เป็นแนวทางในการพัฒนาสื่อดิจิทัลสำหรับรายวิชาในระดับอาชีวศึกษา",
+                    "ส่งเสริมแรงจูงใจและการมีส่วนร่วมของผู้เรียน"
+                ]
+            },
+            { 
+                id: '11', 
+                title: "NAIL SALON QUEUE", 
+                sub: "11. การพัฒนาเว็บไซต์ระบบจองคิวร้านทำเล็บ", 
+                img: "https://images.unsplash.com/photo-1604654894610-df490668711d?q=80&w=2000", 
+                creatorImg: "https://via.placeholder.com/400x500/010204/00ffff?text=GROUP_11",
+                creators: ["นางสาวสุริษา หอมใจ", "นางสาวสุมิตรา สุภานิช"],
+                objectives: [
+                    "พัฒนาและออกแบบเว็บไซต์ระบบจองคิวออนไลน์สำหรับร้านทำเล็บ",
+                    "ศึกษาความพึงพอใจของผู้ใช้งานที่มีต่อระบบจองคิว"
+                ],
+                benefits: [
+                    "ได้ระบบจองคิวที่ใช้งานจริงผ่านเครือข่าย",
+                    "พัฒนาทักษะการเขียนโปรแกรมและฐานข้อมูล MySQL",
+                    "เรียนรู้การใช้ AI เป็นเครื่องมือช่วยพัฒนาโครงการ"
+                ]
+            }
+        ];
+
+        const sfx = {};
+        let bgmAudio = document.getElementById('bgm-audio');
+        let masterTl = gsap.timeline({ paused: true });
+        let currentIdx = 0;
+
+        function createParticleBurst(x, y, color = 'var(--accent-cyan)') {
+            const particleCount = 10;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                document.body.appendChild(particle);
+                
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 100 + Math.random() * 100;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                
+                gsap.to(particle, {
+                    x: tx,
+                    y: ty,
+                    opacity: 0,
+                    scale: 0,
+                    duration: 0.6 + Math.random() * 0.4,
+                    ease: "power2.out",
+                    onComplete: () => particle.remove()
+                });
+            }
+        }
+
+        function triggerGlitch() {
+            const glitch = document.getElementById('glitch');
+            gsap.timeline()
+                .set(glitch, { opacity: 1, backgroundPosition: '0% 0%' })
+                .to(glitch, { backgroundPosition: '100% 0%', duration: 0.1 })
+                .to(glitch, { backgroundPosition: '200% 0%', duration: 0.1 })
+                .to(glitch, { opacity: 0, duration: 0.05 });
+        }
+
+        function setVignetteColor(color1, color2) {
+            const vignette = document.getElementById('vignette');
+            vignette.style.background = `radial-gradient(circle at center, transparent 30%, ${color1} 70%, ${color2} 100%)`;
+            gsap.to(vignette, { opacity: 0.4, duration: 1 });
+        }
+
+        function prebootAudio() {
+            bgmAudio.src = audioFiles.bgm;
+            bgmAudio.load();
+            bgmAudio.addEventListener('canplaythrough', () => {
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('start-btn').innerText = "INITIALIZE SYSTEM";
+                document.getElementById('loading-hint').innerText = "AUDIO_STREAM: STABLE • READY";
+            }, { once: true });
+
+            sfx.spin = new Audio(audioFiles.spin);
+            sfx.impact = new Audio(audioFiles.impact);
+            sfx.whoosh = new Audio(audioFiles.whoosh);
+        }
+
+        async function playSfx(name, vol = 0.25) {
+            const sound = sfx[name];
+            if (sound) { try { sound.currentTime = 0; sound.volume = vol; await sound.play(); } catch(e) {} }
+        }
+
+        async function startSpinSfx(vol = 0.2) {
+            if (sfx.spin) {
+                sfx.spin.loop = true;
+                sfx.spin.volume = vol;
+                try { await sfx.spin.play(); } catch(e) {}
+            }
+        }
+
+        function stopSpinSfx() {
+            if (sfx.spin) { sfx.spin.pause(); sfx.spin.currentTime = 0; sfx.spin.loop = false; }
+        }
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            gsap.to("#start-screen", { opacity: 0, duration: 0.6, onComplete: () => {
+                document.getElementById('start-screen').remove();
+                bgmAudio.play().catch(e => console.warn(e));
+                masterTl.play();
+            }});
+        });
+
+        function init() {
+            const track = document.getElementById('num-track');
+            const rig = document.getElementById('camera-rig');
+            const outro = document.getElementById('outro');
+
+            prebootAudio();
+
+            const spinValues = projects.map(p => p.id.padStart(2, '0'));
+            for (let r = 0; r < 12; r++) {
+                spinValues.forEach(val => {
+                    const div = document.createElement('div');
+                    div.className = 'number-item';
+                    div.innerText = val;
+                    div.setAttribute('data-number', val);
+                    track.appendChild(div);
+                });
+            }
+
+            projects.forEach((p) => {
+                const div = document.createElement('div');
+                div.className = 'scene project-scene';
+                div.id = `scene-${p.id}`;
+                div.innerHTML = `
+                    <div class="content-layout">
+                        <div class="creator-box">
+                            <div class="node-tag">NODE: 0${p.id}</div>
+                            <div class="creator-inner"><img src="${p.creatorImg}"></div>
+                        </div>
+                        <div class="info-panel">
+                            <div class="title-punch">${p.title}</div>
+                            <div class="subtitle-thai">${p.sub}</div>
+                            
+                            <div class="info-section">
+                                <div class="section-title">ผู้จัดทำ</div>
+                                <div class="creators-row">
+                                    ${p.creators.map(creator => `<div class="creator-tag">${creator}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="section-title">วัตถุประสงค์</div>
+                                <ul class="info-list">
+                                    ${p.objectives.map(obj => `<li>${obj}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="info-section">
+                                <div class="section-title">ประโยชน์ที่คาดว่าจะได้รับ</div>
+                                <ul class="info-list">
+                                    ${p.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                rig.insertBefore(div, outro);
+            });
+
+            buildTimeline();
+        }
+
+        function buildTimeline() {
+            const numItems = document.querySelectorAll('.number-item');
+            if (numItems.length === 0) return;
+            const cardH = numItems[0].offsetHeight;
+            const drawStage = document.getElementById('draw-stage');
+            const boxL = document.getElementById('box-l');
+            const boxR = document.getElementById('box-r');
+
+            const vignetteColors = [
+                ['rgba(0, 100, 150, 0.3)', 'rgba(0, 0, 0, 0.9)'],
+                ['rgba(100, 0, 150, 0.3)', 'rgba(0, 0, 0, 0.9)'],
+                ['rgba(0, 150, 100, 0.3)', 'rgba(0, 0, 0, 0.9)'],
+                ['rgba(150, 100, 0, 0.3)', 'rgba(0, 0, 0, 0.9)']
+            ];
+
+            projects.forEach((p, i) => {
+                masterTl.add(() => {
+                    currentIdx = i;
+                    
+                    const prevIdx = (i - 1 + projects.length) % projects.length;
+                    const nextIdx = (i + 1) % projects.length;
+                    
+                    boxL.innerHTML = `
+                        <div class="side-box-inner">
+                            <div class="poster-carousel" id="carousel-l">
+                                <img src="${projects[prevIdx].img}">
+                                <img src="${p.img}">
+                                <img src="${projects[nextIdx].img}">
+                            </div>
+                        </div>
+                        <div class="side-label">POSTER_L: GROUP_${p.id}</div>
+                    `;
+                    
+                    boxR.innerHTML = `
+                        <div class="side-box-inner">
+                            <div class="poster-carousel" id="carousel-r">
+                                <img src="${projects[prevIdx].img}">
+                                <img src="${p.img}">
+                                <img src="${projects[nextIdx].img}">
+                            </div>
+                        </div>
+                        <div class="side-label">POSTER_R: GROUP_${p.id}</div>
+                    `;
+                    
+                    gsap.set("#carousel-l, #carousel-r", { x: 0 });
+                });
+
+                masterTl.set(drawStage, { autoAlpha: 1 });
+                masterTl.fromTo(drawStage, 
+                    { autoAlpha: 0, scale: 0.9 }, 
+                    { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }
+                );
+                
+                masterTl.to("#carousel-l", {
+                    x: "-100%",
+                    rotation: 0.5,
+                    duration: 2.5,
+                    ease: "power2.inOut"
+                }, "-=0.2");
+                
+                masterTl.to("#carousel-r", {
+                    x: "-100%", 
+                    rotation: -0.5,
+                    duration: 2.5,
+                    ease: "power2.inOut"
+                }, "-=2.5");
+                
+                const targetPos = (projects.length * 8) + i; 
+                masterTl.add(() => startSpinSfx(0.3), "-=2.5"); 
+                
+                masterTl.fromTo("#num-track", 
+                    { y: 0 }, 
+                    { 
+                        y: -(targetPos * cardH), 
+                        duration: 3.2, 
+                        ease: "expo.inOut",
+                        onComplete: () => { stopSpinSfx(); } 
+                    },
+                    "-=2.5"
+                );
+                
+                masterTl.to("#carousel-l, #carousel-r", {
+                    x: "-115%",
+                    rotation: 0,
+                    duration: 0.4,
+                    ease: "power1.out"
+                });
+                
+                masterTl.to("#carousel-l, #carousel-r", {
+                    x: "-100%",
+                    duration: 0.3,
+                    ease: "power1.in"
+                });
+                
+                masterTl.add(() => {
+                    playSfx('impact', 0.3);
+                    gsap.fromTo("#flash", { opacity: 0.5 }, { opacity: 0, duration: 0.5 });
+                    triggerGlitch();
+                    createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, 'var(--accent-cyan)');
+                    
+                    setTimeout(() => {
+                        createParticleBurst(window.innerWidth * 0.2, window.innerHeight * 0.3, 'var(--accent-pink)');
+                        createParticleBurst(window.innerWidth * 0.8, window.innerHeight * 0.3, 'var(--accent-green)');
+                    }, 100);
+                });
+                
+                masterTl.to(drawStage, { 
+                    autoAlpha: 0, 
+                    duration: 0.4, 
+                    scale: 1.1,
+                    rotation: 1,
+                    ease: "power2.in"
+                }, "+=0.2");
+
+                const scene = document.querySelector(`#scene-${p.id}`);
+                const vignetteIdx = i % vignetteColors.length;
+                
+                masterTl.add(() => {
+                    setVignetteColor(vignetteColors[vignetteIdx][0], vignetteColors[vignetteIdx][1]);
+                });
+                
+                masterTl.fromTo(scene, 
+                    { autoAlpha: 0, scale: 0.85, rotationY: -15 },
+                    { autoAlpha: 1, scale: 1, rotationY: 0, duration: 0.8, ease: "power2.out" },
+                    "-=0.2"
+                );
+                
+                masterTl.fromTo(scene.querySelector('.creator-box'), 
+                    { y: -50, opacity: 0, rotationX: -20 }, 
+                    { y: 0, opacity: 1, rotationX: 0, duration: 1, ease: "back.out(2)" }, 
+                    "-=0.6"
+                );
+                
+                masterTl.fromTo(scene.querySelector('.info-panel'), 
+                    { y: 50, opacity: 0, scale: 0.9 }, 
+                    { y: 0, opacity: 1, scale: 1, duration: 1, ease: "back.out(1.8)" }, 
+                    "-=0.8"
+                );
+
+                const infoSections = scene.querySelectorAll('.info-section');
+                infoSections.forEach((section, idx) => {
+                    masterTl.fromTo(section,
+                        { opacity: 0, x: -30 },
+                        { 
+                            opacity: 1, 
+                            x: 0, 
+                            duration: 0.8,
+                            ease: "power2.out"
+                        },
+                        `-=${0.6 - (idx * 0.15)}`
+                    );
+                });
+
+                masterTl.add(() => playSfx('whoosh', 0.25), "-=0.7");
+                
+                masterTl.to(scene, { 
+                    opacity: 0, 
+                    duration: 0.7, 
+                    scale: 1.05,
+                    rotationY: 10,
+                    filter: "blur(10px)",
+                    ease: "power2.inOut" 
+                }, "+=6");
+                
+                masterTl.to("#vignette", { opacity: 0, duration: 0.5 }, "-=0.5");
+            });
+
+            masterTl.to("#outro", { autoAlpha: 1, duration: 1.5 });
+            masterTl.eventCallback("onUpdate", () => {
+                const time = masterTl.time();
+                document.getElementById('hud-timer').innerText = `ID_${Math.floor(time/60).toString().padStart(2,'0')}:${Math.floor(time%60).toString().padStart(2,'0')}:${Math.floor((time%1)*100).toString().padStart(2,'0')}:NODE_11`;
+            });
+            masterTl.eventCallback("onComplete", () => { masterTl.restart(); });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
